@@ -25,6 +25,7 @@ export function ProjectView() {
   const dangerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    setDangerVisible(false)
     const el = dangerRef.current
     if (!el) return
     const observer = new IntersectionObserver(
@@ -33,7 +34,7 @@ export function ProjectView() {
     )
     observer.observe(el)
     return () => observer.disconnect()
-  }, [project])
+  }, [projectId])
 
   const isLoading = projectLoading || sectionsLoading || tasksLoading
 
