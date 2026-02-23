@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { clsx } from 'clsx'
+import { cn } from '@/lib/utils'
 import { useAuth } from '@/contexts/AuthContext'
 import { useProjects, useDeleteProject, buildProjectTree } from '@/hooks/useProjects'
 import { useInboxCount, useTodayCount, useUpdateTask } from '@/hooks/useTasks'
@@ -89,13 +89,13 @@ export function Sidebar({ isOpen, onClose, onOpenMaestro, onOpenSettings }: Side
 
       {/* Sidebar */}
       <aside
-        className={clsx(
-          'fixed lg:static inset-y-0 left-0 z-30 w-72 h-full bg-stone-100 border-r border-stone-200 flex flex-col transition-transform lg:transform-none flex-shrink-0',
+        className={cn(
+          'fixed lg:static inset-y-0 left-0 z-30 w-72 h-full bg-gray-100 border-r border-gray-200 flex flex-col transition-transform lg:transform-none flex-shrink-0',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* User info */}
-        <div className="p-4 border-b border-stone-200">
+        <div className="p-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-accent-500 flex items-center justify-center text-white font-medium">
               {profile?.display_name?.charAt(0).toUpperCase() ?? '?'}
@@ -152,7 +152,7 @@ export function Sidebar({ isOpen, onClose, onOpenMaestro, onOpenSettings }: Side
         </nav>
 
         {/* Footer actions */}
-        <div className="p-3 border-t border-stone-200 space-y-1">
+        <div className="p-3 border-t border-gray-200 space-y-1">
           <button
             onClick={onOpenMaestro}
             className="flex items-center gap-2 w-full px-3 py-2 text-accent-600 hover:bg-accent-50 rounded-md transition-colors"
@@ -162,14 +162,14 @@ export function Sidebar({ isOpen, onClose, onOpenMaestro, onOpenSettings }: Side
           </button>
           <button
             onClick={onOpenSettings}
-            className="flex items-center gap-2 w-full px-3 py-2 text-gray-600 hover:bg-stone-200 rounded-md transition-colors"
+            className="flex items-center gap-2 w-full px-3 py-2 text-gray-600 hover:bg-gray-200 rounded-md transition-colors"
           >
             <SettingsIcon />
             <span>Settings</span>
           </button>
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-2 w-full px-3 py-2 text-gray-600 hover:bg-stone-200 rounded-md transition-colors"
+            className="flex items-center gap-2 w-full px-3 py-2 text-gray-600 hover:bg-gray-200 rounded-md transition-colors"
           >
             <LogoutIcon />
             <span>Sign out</span>
@@ -246,11 +246,11 @@ function NavItem({ to, icon, label, count, onClick, onTaskDrop }: NavItemProps) 
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       className={({ isActive }) =>
-        clsx(
+        cn(
           'flex items-center gap-3 px-3 py-2 rounded-md transition-colors',
           isActive
             ? 'bg-accent-100 text-accent-700'
-            : 'text-gray-700 hover:bg-stone-200',
+            : 'text-gray-700 hover:bg-gray-200',
           isDragOver && 'ring-2 ring-accent-500 bg-accent-50'
         )
       }
@@ -346,7 +346,7 @@ function ProjectItem({ project, depth, onClick, onTaskDrop, onContextMenu }: Pro
             onClick={() => setExpanded(!expanded)}
             className="p-1 text-gray-400 hover:text-gray-600"
           >
-            <ChevronIcon className={clsx('w-3 h-3 transition-transform', expanded && 'rotate-90')} />
+            <ChevronIcon className={cn('w-3 h-3 transition-transform', expanded && 'rotate-90')} />
           </button>
         )}
         <NavLink
@@ -360,11 +360,11 @@ function ProjectItem({ project, depth, onClick, onTaskDrop, onContextMenu }: Pro
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           className={({ isActive }) =>
-            clsx(
+            cn(
               'flex-1 flex items-center gap-2 px-2 py-1.5 rounded-md transition-colors',
               isActive
                 ? 'bg-accent-100 text-accent-700'
-                : 'text-gray-700 hover:bg-stone-200',
+                : 'text-gray-700 hover:bg-gray-200',
               !hasChildren && 'ml-5',
               isDragOver && 'ring-2 ring-accent-500 bg-accent-50'
             )

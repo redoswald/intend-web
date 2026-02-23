@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { clsx } from 'clsx'
+import { cn } from '@/lib/utils'
 import Markdown from 'react-markdown'
 import { useSettings } from '@/hooks/useSettings'
 import { useMaestroContext } from '@/hooks/useMaestroContext'
@@ -182,7 +182,7 @@ export function MaestroDrawer({ isOpen, onClose, onOpenSettings }: MaestroDrawer
 
       {/* Drawer */}
       <div
-        className={clsx(
+        className={cn(
           'fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-xl flex flex-col transition-transform duration-300',
           isOpen ? 'translate-x-0' : 'translate-x-full'
         )}
@@ -241,13 +241,13 @@ export function MaestroDrawer({ isOpen, onClose, onOpenSettings }: MaestroDrawer
               {messages.map((message, idx) => (
                 <div
                   key={idx}
-                  className={clsx(
+                  className={cn(
                     'flex',
                     message.role === 'user' ? 'justify-end' : 'justify-start'
                   )}
                 >
                   <div
-                    className={clsx(
+                    className={cn(
                       'max-w-[85%] rounded-lg px-4 py-2',
                       message.role === 'user'
                         ? 'bg-accent-600 text-white'

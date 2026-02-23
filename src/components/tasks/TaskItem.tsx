@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { clsx } from 'clsx'
+import { cn } from '@/lib/utils'
 import { format, isToday, isPast, parseISO } from 'date-fns'
 import Markdown from 'react-markdown'
 import { useCompleteTask, useUncompleteTask, useDeleteTask } from '@/hooks/useTasks'
@@ -98,7 +98,7 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
         draggable={draggable && depth === 0}
         onDragStart={handleDragStart}
         style={{ paddingLeft: depth > 0 ? `${depth * 24}px` : undefined }}
-        className={clsx(
+        className={cn(
           'group flex items-start gap-3 px-3 py-2 rounded-md transition-colors',
           onClick && 'cursor-pointer hover:bg-gray-50',
           draggable && depth === 0 && 'cursor-grab active:cursor-grabbing',
@@ -108,7 +108,7 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
       {/* Checkbox */}
       <button
         onClick={handleToggleComplete}
-        className={clsx(
+        className={cn(
           'mt-0.5 w-5 h-5 rounded-full border-2 flex-shrink-0 transition-colors',
           priorityColors[task.priority],
           isCompleted && 'bg-gray-300 border-gray-300'
@@ -125,7 +125,7 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span
-            className={clsx(
+            className={cn(
               'text-gray-900',
               isCompleted && 'line-through text-gray-400'
             )}
@@ -137,7 +137,7 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
         {/* Description preview */}
         {task.description && (
           <div
-            className={clsx(
+            className={cn(
               'mt-1 text-sm text-gray-500 line-clamp-2',
               isCompleted && 'line-through text-gray-400'
             )}
@@ -192,7 +192,7 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
               }}
               className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1 px-1 py-0.5 rounded hover:bg-gray-100 transition-colors"
             >
-              <ChevronIcon className={clsx('w-3 h-3 transition-transform', isExpanded && 'rotate-90')} />
+              <ChevronIcon className={cn('w-3 h-3 transition-transform', isExpanded && 'rotate-90')} />
               {openSubtasks.length}/{task.subtasks!.length}
             </button>
           )}
@@ -204,11 +204,11 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
         {/* Deadline badge (hard deadline) */}
         {deadline && (
           <span
-            className={clsx(
+            className={cn(
               'text-xs px-1.5 py-0.5 rounded flex items-center gap-1',
               isDeadlinePassed && 'text-red-700 bg-red-100 font-medium',
-              isDeadlineToday && !isDeadlinePassed && 'text-orange-700 bg-orange-100 font-medium',
-              !isDeadlinePassed && !isDeadlineToday && 'text-orange-600 bg-orange-50'
+              isDeadlineToday && !isDeadlinePassed && 'text-accent-700 bg-accent-100 font-medium',
+              !isDeadlinePassed && !isDeadlineToday && 'text-accent-600 bg-accent-50'
             )}
             title="Deadline"
           >
@@ -224,7 +224,7 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
         {/* Due date badge (planned date) */}
         {dueDate && (
           <span
-            className={clsx(
+            className={cn(
               'text-xs px-1.5 py-0.5 rounded',
               isOverdue && 'text-red-600 bg-red-50',
               isDueToday && !isOverdue && 'text-accent-600 bg-accent-50',

@@ -6,37 +6,37 @@ const features = [
     icon: InboxIcon,
     title: 'Unified Inbox',
     description: 'Capture tasks instantly and triage them later. Nothing falls through the cracks.',
-    color: 'orange' as const,
+    color: 'accent' as const,
   },
   {
     icon: FolderIcon,
     title: 'Projects & Sections',
     description: 'Organize work into nested projects with sections for clear structure at any scale.',
-    color: 'amber' as const,
+    color: 'teal' as const,
   },
   {
     icon: CalendarIcon,
     title: 'Today & Upcoming',
     description: 'See what needs attention now and plan ahead with deadline and due date views.',
-    color: 'orange' as const,
+    color: 'accent' as const,
   },
   {
     icon: RepeatIcon,
     title: 'Recurring Tasks',
     description: 'Set daily, weekly, or custom recurrence rules so routines manage themselves.',
-    color: 'amber' as const,
+    color: 'teal' as const,
   },
   {
     icon: SparklesIcon,
     title: 'Maestro AI',
     description: 'An AI assistant that understands your tasks and helps you prioritize what matters.',
-    color: 'orange' as const,
+    color: 'accent' as const,
   },
   {
     icon: CommandIcon,
     title: 'Command Palette',
     description: 'Navigate anywhere, create tasks, and switch views instantly with keyboard shortcuts.',
-    color: 'amber' as const,
+    color: 'teal' as const,
   },
 ]
 
@@ -44,7 +44,7 @@ export function LandingPage() {
   const { user } = useAuth()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50">
+    <div className="min-h-screen bg-gradient-to-br from-accent-50 via-white to-accent-50">
       <div className="flex flex-col">
         {/* Hero Section */}
         <section className="px-4 py-16 md:py-24">
@@ -74,7 +74,7 @@ export function LandingPage() {
                         </button>
                       </Link>
                       <Link to="/login">
-                        <button className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-xl border-2 border-gray-200 hover:border-accent-300 hover:bg-orange-50 hover:text-accent-500 transition-all bg-white text-gray-700">
+                        <button className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-xl border-2 border-gray-200 hover:border-accent-300 hover:bg-accent-50 hover:text-accent-500 transition-all bg-white text-gray-700">
                           Sign In
                         </button>
                       </Link>
@@ -85,7 +85,7 @@ export function LandingPage() {
 
               {/* Right - Illustration placeholder */}
               <div className="hidden md:flex justify-center items-center">
-                <div className="w-full max-w-md aspect-square bg-gradient-to-br from-accent-100 to-amber-100 rounded-3xl flex items-center justify-center shadow-inner">
+                <div className="w-full max-w-md aspect-square bg-gradient-to-br from-accent-100 to-accent-50 rounded-3xl flex items-center justify-center shadow-inner">
                   <svg className="w-48 h-48 text-accent-400" viewBox="0 0 120 120" fill="none">
                     {/* Stylized octopus/task icon */}
                     <circle cx="60" cy="40" r="24" fill="currentColor" opacity="0.2" />
@@ -132,9 +132,9 @@ export function LandingPage() {
                   <div className="flex items-start gap-4">
                     <div
                       className={`p-3 rounded-xl ${
-                        feature.color === 'orange'
-                          ? 'bg-orange-50 text-accent-500'
-                          : 'bg-amber-50 text-amber-500'
+                        feature.color === 'accent'
+                          ? 'bg-accent-50 text-accent-500'
+                          : 'bg-teal-50 text-teal-500'
                       }`}
                     >
                       <feature.icon />
@@ -156,7 +156,7 @@ export function LandingPage() {
 
         {/* Footer CTA */}
         <section className="px-4 py-16">
-          <div className="max-w-2xl mx-auto text-center bg-gradient-to-r from-accent-400 to-amber-400 rounded-3xl p-10 shadow-lg">
+          <div className="max-w-2xl mx-auto text-center bg-gradient-to-r from-accent-500 to-accent-600 rounded-3xl p-10 shadow-lg">
             <h2 className="text-2xl font-semibold text-white">
               Ready to take control of your tasks?
             </h2>

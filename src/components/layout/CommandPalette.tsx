@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { clsx } from 'clsx'
+import { cn } from '@/lib/utils'
 import { useProjects } from '@/hooks/useProjects'
 import type { Project } from '@/types'
 
@@ -227,7 +227,7 @@ function ResultItem({ item, isSelected, onSelect, onHover }: ResultItemProps) {
     <button
       onClick={onSelect}
       onMouseEnter={onHover}
-      className={clsx(
+      className={cn(
         'w-full flex items-center gap-3 px-4 py-2 text-left transition-colors',
         isSelected ? 'bg-accent-50 text-accent-700' : 'text-gray-700 hover:bg-gray-50'
       )}

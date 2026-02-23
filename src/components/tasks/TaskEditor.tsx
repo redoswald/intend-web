@@ -137,12 +137,12 @@ export function TaskEditor({ task, defaultProjectId, defaultSectionId, onClose, 
 
         {/* Deadline (hard deadline) */}
         <div className="flex items-center gap-1">
-          <span className="text-xs text-orange-600">Deadline:</span>
+          <span className="text-xs text-accent-600">Deadline:</span>
           <input
             type="date"
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
-            className="text-sm border border-orange-200 rounded-md px-2 py-1.5"
+            className="text-sm border border-accent-200 rounded-md px-2 py-1.5"
           />
         </div>
 

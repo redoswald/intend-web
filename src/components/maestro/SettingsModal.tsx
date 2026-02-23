@@ -92,8 +92,8 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             )}
           </div>
 
-          <div className="bg-amber-50 border border-amber-200 rounded-md p-3">
-            <p className="text-xs text-amber-800">
+          <div className="bg-teal-50 border border-teal-100 rounded-md p-3">
+            <p className="text-xs text-teal-500">
               Your API key is stored securely in the database and is only used to communicate with Anthropic's API from your browser.
             </p>
           </div>
