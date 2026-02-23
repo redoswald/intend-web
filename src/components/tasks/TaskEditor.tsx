@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { useProjects } from '@/hooks/useProjects'
 import { useCreateTask, useUpdateTask } from '@/hooks/useTasks'
 import type { Task, CreateTaskInput } from '@/types'
@@ -59,6 +60,7 @@ export function TaskEditor({ task, defaultProjectId, defaultSectionId, onClose, 
         await updateTask.mutateAsync({ id: task.id, ...data })
       } else {
         await createTask.mutateAsync(data)
+        toast('Task created')
       }
 
       onSaved?.()

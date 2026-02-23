@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { MainPanel } from '@/components/layout/MainPanel'
 import { TaskList } from '@/components/tasks/TaskList'
 import { TaskEditor } from '@/components/tasks/TaskEditor'
@@ -152,9 +153,11 @@ export function ProjectView() {
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}
           onConfirm={() => {
+            const deletedName = project.name
             deleteProject.mutate(projectId!, {
               onSuccess: () => {
                 setShowDeleteModal(false)
+                toast(`Project "${deletedName}" deleted`)
                 navigate('/inbox')
               },
             })

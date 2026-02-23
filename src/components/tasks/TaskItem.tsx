@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { format, isToday, isPast, parseISO } from 'date-fns'
 import Markdown from 'react-markdown'
-import { useCompleteTask, useUncompleteTask, useDeleteTask } from '@/hooks/useTasks'
-import type { Task } from '@/types'
+import { toast } from 'sonner'
+import { useCompleteTask, useUncompleteTask, useDeleteTask, useCreateTask } from '@/hooks/useTasks'
+import type { Task, CreateTaskInput } from '@/types'
 
 interface TaskItemProps {
   task: Task
@@ -44,6 +45,7 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
   const completeTask = useCompleteTask()
   const uncompleteTask = useUncompleteTask()
   const deleteTask = useDeleteTask()
+  const createTask = useCreateTask()
 
   // Use stored state if available, otherwise use defaultExpanded
   const [isExpanded, setIsExpanded] = useState(() => {
@@ -64,7 +66,17 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
     if (isCompleted) {
       uncompleteTask.mutate(task.id)
     } else {
-      completeTask.mutate(task.id)
+      completeTask.mutate(task.id, {
+        onSuccess: () => {
+          toast(`"${task.title}" completed`, {
+            duration: 5000,
+            action: {
+              label: 'Undo',
+              onClick: () => uncompleteTask.mutate(task.id),
+            },
+          })
+        },
+      })
     }
   }
 
@@ -78,7 +90,28 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
 
   function handleDelete(e: React.MouseEvent) {
     e.stopPropagation()
-    deleteTask.mutate(task.id)
+    const snapshot: CreateTaskInput = {
+      title: task.title,
+      description: task.description ?? null,
+      project_id: task.project_id ?? null,
+      section_id: task.section_id ?? null,
+      parent_task_id: task.parent_task_id ?? null,
+      priority: task.priority,
+      due_date: task.due_date ?? null,
+      due_time: task.due_time ?? null,
+      deadline: task.deadline ?? null,
+    }
+    deleteTask.mutate(task.id, {
+      onSuccess: () => {
+        toast(`"${task.title}" deleted`, {
+          duration: 5000,
+          action: {
+            label: 'Undo',
+            onClick: () => createTask.mutate(snapshot),
+          },
+        })
+      },
+    })
   }
 
   const priorityColors: Record<number, string> = {

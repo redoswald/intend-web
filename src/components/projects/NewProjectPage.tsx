@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { MainPanel } from '@/components/layout/MainPanel'
 import { useCreateProject, useProjects } from '@/hooks/useProjects'
 
@@ -40,6 +41,7 @@ export function NewProjectPage() {
         parent_id: parentId,
       })
 
+      toast(`Project "${name.trim()}" created`)
       navigate(`/project/${project.id}`)
     } catch (err) {
       console.error('Project create error:', err)

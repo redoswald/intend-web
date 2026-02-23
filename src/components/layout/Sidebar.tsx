@@ -9,6 +9,7 @@ import {
   ChevronRight,
   Sparkles,
 } from 'lucide-react'
+import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/contexts/AuthContext'
 import { useProjects, useDeleteProject, buildProjectTree } from '@/hooks/useProjects'
@@ -73,10 +74,12 @@ export function Sidebar({
   function handleConfirmDelete() {
     if (!deleteTarget) return
     const deletedId = deleteTarget.id
+    const deletedName = deleteTarget.name
     deleteProject.mutate(deletedId, {
       onSuccess: () => {
         setShowDeleteModal(false)
         setDeleteTarget(null)
+        toast(`Project "${deletedName}" deleted`)
         if (location.pathname === `/project/${deletedId}`) {
           navigate('/inbox')
         }

@@ -10,10 +10,12 @@ import { UpcomingView } from '@/components/views/UpcomingView'
 import { CompletedView } from '@/components/views/CompletedView'
 import { ProjectView } from '@/components/projects/ProjectView'
 import { NewProjectPage } from '@/components/projects/NewProjectPage'
+import { Toaster } from '@/components/ui/sonner'
 
 export default function App() {
   return (
     <BrowserRouter>
+      <Toaster />
       <Routes>
         {/* Public routes */}
         <Route index element={<LandingPage />} />
