@@ -23,7 +23,6 @@ interface CommandPaletteProps {
   isOpen: boolean
   onClose: () => void
   onOpenMaestro: () => void
-  onOpenSettings: () => void
 }
 
 interface SearchItem {
@@ -57,7 +56,7 @@ const SECTION_LABELS: Record<string, string> = {
   task: 'Tasks',
 }
 
-export function CommandPalette({ isOpen, onClose, onOpenMaestro, onOpenSettings }: CommandPaletteProps) {
+export function CommandPalette({ isOpen, onClose, onOpenMaestro }: CommandPaletteProps) {
   const [query, setQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -76,8 +75,8 @@ export function CommandPalette({ isOpen, onClose, onOpenMaestro, onOpenSettings 
   const actionItems: SearchItem[] = useMemo(() => [
     { id: 'maestro', type: 'action', name: 'Open Maestro', icon: <Sparkles className="w-5 h-5" />, action: onOpenMaestro },
     { id: 'new-project', type: 'action', name: 'New Project', icon: <FolderPlus className="w-5 h-5" />, path: '/projects/new' },
-    { id: 'settings', type: 'action', name: 'Settings', icon: <Settings className="w-5 h-5" />, action: onOpenSettings },
-  ], [onOpenMaestro, onOpenSettings])
+    { id: 'settings', type: 'action', name: 'Settings', icon: <Settings className="w-5 h-5" />, path: '/settings' },
+  ], [onOpenMaestro])
 
   // Flatten projects into search items
   const projectItems: SearchItem[] = useMemo(() => {

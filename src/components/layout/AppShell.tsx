@@ -1,18 +1,17 @@
 import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { Menu } from 'lucide-react'
 import { Sidebar } from './Sidebar'
 import { MaestroDrawer } from '../maestro/MaestroDrawer'
-import { SettingsModal } from '../maestro/SettingsModal'
 import { CommandPalette, useCommandPalette } from './CommandPalette'
 import { useSidebarResize } from '@/hooks/useSidebarResize'
 
 export function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [maestroOpen, setMaestroOpen] = useState(false)
-  const [settingsOpen, setSettingsOpen] = useState(false)
   const commandPalette = useCommandPalette()
   const sidebar = useSidebarResize()
+  const navigate = useNavigate()
 
   return (
     <div className="h-screen flex bg-white overflow-hidden">
@@ -26,10 +25,6 @@ export function AppShell() {
         onOpenMaestro={() => {
           setSidebarOpen(false)
           setMaestroOpen(true)
-        }}
-        onOpenSettings={() => {
-          setSidebarOpen(false)
-          setSettingsOpen(true)
         }}
       />
 
@@ -63,14 +58,8 @@ export function AppShell() {
         onClose={() => setMaestroOpen(false)}
         onOpenSettings={() => {
           setMaestroOpen(false)
-          setSettingsOpen(true)
+          navigate('/settings')
         }}
-      />
-
-      {/* Settings Modal */}
-      <SettingsModal
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
       />
 
       {/* Command Palette */}
@@ -80,10 +69,6 @@ export function AppShell() {
         onOpenMaestro={() => {
           commandPalette.close()
           setMaestroOpen(true)
-        }}
-        onOpenSettings={() => {
-          commandPalette.close()
-          setSettingsOpen(true)
         }}
       />
     </div>

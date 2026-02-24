@@ -48,7 +48,6 @@ interface SidebarProps {
     onTouchStart: (e: React.TouchEvent) => void
   }
   onOpenMaestro: () => void
-  onOpenSettings: () => void
 }
 
 export function Sidebar({
@@ -59,7 +58,6 @@ export function Sidebar({
   isDragging,
   dragHandleProps,
   onOpenMaestro,
-  onOpenSettings,
 }: SidebarProps) {
   const { user, profile, signOut } = useAuth()
   const { data: projects = [] } = useProjects()
@@ -336,7 +334,6 @@ export function Sidebar({
             displayName={profile?.display_name}
             email={user?.email}
             avatarUrl={profile?.avatar_url ?? user?.user_metadata?.avatar_url}
-            onOpenSettings={onOpenSettings}
             onSignOut={handleSignOut}
           />
         </div>
