@@ -3,23 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { MainPanel } from '@/components/layout/MainPanel'
 import { useCreateProject, useProjects } from '@/hooks/useProjects'
-
-const COLORS = [
-  '#808080', // Gray (default)
-  '#ef4444', // Red
-  '#f97316', // Orange
-  '#eab308', // Yellow
-  '#22c55e', // Green
-  '#14b8a6', // Teal
-  '#3b82f6', // Blue
-  '#8b5cf6', // Purple
-  '#ec4899', // Pink
-]
+import { PROJECT_COLORS } from '@/lib/constants'
 
 export function NewProjectPage() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [color, setColor] = useState(COLORS[0])
+  const [color, setColor] = useState(PROJECT_COLORS[0])
   const [parentId, setParentId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -96,7 +85,7 @@ export function NewProjectPage() {
               Color
             </label>
             <div className="flex gap-2">
-              {COLORS.map((c) => (
+              {PROJECT_COLORS.map((c) => (
                 <button
                   key={c}
                   type="button"

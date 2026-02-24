@@ -8,6 +8,7 @@ import { InboxView } from '@/components/views/InboxView'
 import { TodayView } from '@/components/views/TodayView'
 import { UpcomingView } from '@/components/views/UpcomingView'
 import { CompletedView } from '@/components/views/CompletedView'
+import { ArchiveView } from '@/components/views/ArchiveView'
 import { ProjectView } from '@/components/projects/ProjectView'
 import { NewProjectPage } from '@/components/projects/NewProjectPage'
 import { Toaster } from '@/components/ui/sonner'
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/today" element={<TodayView />} />
           <Route path="/upcoming" element={<UpcomingView />} />
           <Route path="/completed" element={<CompletedView />} />
+          <Route path="/archived" element={<ArchiveView />} />
           <Route path="/project/:projectId" element={<ProjectView />} />
           <Route path="/projects/new" element={<NewProjectPage />} />
         </Route>

@@ -110,6 +110,7 @@ export interface CreateProjectInput {
 
 export interface UpdateProjectInput {
   name?: string
+  parent_id?: string | null
   description?: string | null
   color?: string
   sort_order?: number

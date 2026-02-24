@@ -208,6 +208,27 @@ export function useUncompleteTask() {
   })
 }
 
+// All tasks for a project (open + done), used by Archive view
+export function useAllProjectTasks(projectId: string | undefined) {
+  return useQuery({
+    queryKey: ['tasks', 'all', projectId],
+    queryFn: async () => {
+      if (!projectId) return []
+
+      const { data, error } = await supabase
+        .from('tasks')
+        .select('*, project:projects(id, name, color)')
+        .eq('project_id', projectId)
+        .order('status')
+        .order('sort_order')
+
+      if (error) throw error
+      return data as Task[]
+    },
+    enabled: !!projectId,
+  })
+}
+
 // Completed tasks for history view
 export function useCompletedTasks(limit: number = 100) {
   return useQuery({

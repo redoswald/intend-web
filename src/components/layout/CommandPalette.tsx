@@ -6,6 +6,7 @@ import {
   CalendarCheck,
   CalendarDays,
   CircleCheck,
+  Archive,
   Plus,
   Sparkles,
   Settings,
@@ -43,6 +44,7 @@ const BUILT_IN_VIEWS: SearchItem[] = [
   { id: 'today', type: 'view', name: 'Today', path: '/today', icon: <CalendarCheck className="w-5 h-5" /> },
   { id: 'upcoming', type: 'view', name: 'Upcoming', path: '/upcoming', icon: <CalendarDays className="w-5 h-5" /> },
   { id: 'completed', type: 'view', name: 'Completed', path: '/completed', icon: <CircleCheck className="w-5 h-5" /> },
+  { id: 'archived', type: 'view', name: 'Archive', path: '/archived', icon: <Archive className="w-5 h-5" /> },
   { id: 'add', type: 'view', name: 'Add Task', path: '/inbox?add=true', icon: <Plus className="w-5 h-5" /> },
 ]
 

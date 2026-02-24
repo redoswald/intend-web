@@ -36,7 +36,16 @@
       "Bash(git -C /Users/aaron/Desktop/code/todopus log --oneline -5)",
       "Bash(git -C /Users/aaron/Desktop/code/todopus add package.json .claude/settings.local.json)",
       "Bash(git -C:*)",
-      "Bash(git -C /Users/aaron/Desktop/code/todopus push)"
+      "Bash(git -C /Users/aaron/Desktop/code/todopus push)",
+      "Bash(npx vite build:*)",
+      "Bash(vercel:*)",
+      "Bash(ls:*)",
+      "Bash(git mv:*)",
+      "Bash(wc:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx shadcn@latest:*)",
+      "Bash(npm run:*)",
+      "Bash(grep:*)"
     ]
   }
 }
