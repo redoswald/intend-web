@@ -80,7 +80,7 @@ export function ProjectView() {
           </div>
         )}
 
-        {/* Add task to unsectioned area */}
+        {/* Add task to project (unsectioned) */}
         {addingTaskToSection === 'none' ? (
           <div className="mb-6">
             <TaskEditor
@@ -89,15 +89,13 @@ export function ProjectView() {
             />
           </div>
         ) : (
-          unsectionedTasks.length === 0 && sections.length === 0 && (
-            <button
-              onClick={() => setAddingTaskToSection('none')}
-              className="mb-6 flex items-center gap-2 px-3 py-2 text-gray-500 hover:text-accent-600 transition-colors"
-            >
-              <PlusIcon />
-              <span>Add task</span>
-            </button>
-          )
+          <button
+            onClick={() => setAddingTaskToSection('none')}
+            className="mb-6 flex items-center gap-2 px-3 py-2 text-gray-500 hover:text-accent-600 transition-colors"
+          >
+            <PlusIcon />
+            <span>Add task</span>
+          </button>
         )}
 
         {/* Sections */}
@@ -111,17 +109,6 @@ export function ProjectView() {
             setAddingTaskToSection={setAddingTaskToSection}
           />
         ))}
-
-        {/* Add task button when there are sections but no unsectioned tasks */}
-        {sections.length > 0 && unsectionedTasks.length === 0 && addingTaskToSection !== 'none' && (
-          <button
-            onClick={() => setAddingTaskToSection('none')}
-            className="mb-6 flex items-center gap-2 px-3 py-2 text-gray-500 hover:text-accent-600 transition-colors"
-          >
-            <PlusIcon />
-            <span>Add task (no section)</span>
-          </button>
-        )}
 
         {/* Editing task overlay */}
         {editingTask && (

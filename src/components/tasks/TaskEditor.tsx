@@ -9,16 +9,17 @@ interface TaskEditorProps {
   task?: Task | null
   defaultProjectId?: string | null
   defaultSectionId?: string | null
+  defaultDueDate?: string | null
   onClose: () => void
   onSaved?: () => void
 }
 
-export function TaskEditor({ task, defaultProjectId, defaultSectionId, onClose, onSaved }: TaskEditorProps) {
+export function TaskEditor({ task, defaultProjectId, defaultSectionId, defaultDueDate, onClose, onSaved }: TaskEditorProps) {
   const [title, setTitle] = useState(task?.title ?? '')
   const [description, setDescription] = useState(task?.description ?? '')
   const [projectId, setProjectId] = useState<string | null>(task?.project_id ?? defaultProjectId ?? null)
   const [sectionId] = useState<string | null>(task?.section_id ?? defaultSectionId ?? null)
-  const [dueDate, setDueDate] = useState(task?.due_date ?? '')
+  const [dueDate, setDueDate] = useState(task?.due_date ?? defaultDueDate ?? '')
   const [deadline, setDeadline] = useState(task?.deadline ?? '')
   const [priority, setPriority] = useState(task?.priority ?? 0)
   const [recurrenceRule, setRecurrenceRule] = useState<string | null>(task?.recurrence_rule ?? null)
