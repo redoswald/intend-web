@@ -4,6 +4,7 @@ import { format, isToday, isPast, parseISO } from 'date-fns'
 import Markdown from 'react-markdown'
 import { toast } from 'sonner'
 import { useCompleteTask, useUncompleteTask, useDeleteTask, useCreateTask } from '@/hooks/useTasks'
+import { describeRecurrence } from '@/lib/recurrenceHelper'
 import type { Task, CreateTaskInput } from '@/types'
 
 interface TaskItemProps {
@@ -66,13 +67,22 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
     if (isCompleted) {
       uncompleteTask.mutate(task.id)
     } else {
-      completeTask.mutate(task.id, {
-        onSuccess: () => {
-          toast(`"${task.title}" completed`, {
+      completeTask.mutate(task, {
+        onSuccess: (result) => {
+          const nextDate = result.nextTask?.due_date
+          const message = nextDate
+            ? `"${task.title}" completed — next: ${format(parseISO(nextDate), 'MMM d')}`
+            : `"${task.title}" completed`
+          toast(message, {
             duration: 5000,
             action: {
               label: 'Undo',
-              onClick: () => uncompleteTask.mutate(task.id),
+              onClick: () => {
+                uncompleteTask.mutate(task.id)
+                if (result.nextTask) {
+                  deleteTask.mutate(result.nextTask.id)
+                }
+              },
             },
           })
         },
@@ -100,6 +110,8 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
       due_date: task.due_date ?? null,
       due_time: task.due_time ?? null,
       deadline: task.deadline ?? null,
+      recurrence_rule: task.recurrence_rule ?? null,
+      recurrence_base_date: task.recurrence_base_date ?? null,
     }
     deleteTask.mutate(task.id, {
       onSuccess: () => {
@@ -254,6 +266,16 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
           </span>
         )}
 
+        {/* Recurrence indicator */}
+        {task.recurrence_rule && (
+          <span
+            className="text-xs text-teal-500 flex items-center"
+            title={describeRecurrence(task.recurrence_rule)}
+          >
+            <RecurrenceIcon />
+          </span>
+        )}
+
         {/* Due date badge (planned date) */}
         {dueDate && (
           <span
@@ -315,6 +337,14 @@ function TrashIcon() {
   return (
     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+    </svg>
+  )
+}
+
+function RecurrenceIcon() {
+  return (
+    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
     </svg>
   )
 }

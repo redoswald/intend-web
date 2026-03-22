@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { useProjects } from '@/hooks/useProjects'
 import { useCreateTask, useUpdateTask } from '@/hooks/useTasks'
+import { RecurrenceBuilder } from './RecurrenceBuilder'
 import type { Task, CreateTaskInput } from '@/types'
 
 interface TaskEditorProps {
@@ -20,6 +21,7 @@ export function TaskEditor({ task, defaultProjectId, defaultSectionId, onClose, 
   const [dueDate, setDueDate] = useState(task?.due_date ?? '')
   const [deadline, setDeadline] = useState(task?.deadline ?? '')
   const [priority, setPriority] = useState(task?.priority ?? 0)
+  const [recurrenceRule, setRecurrenceRule] = useState<string | null>(task?.recurrence_rule ?? null)
   const [error, setError] = useState<string | null>(null)
 
   const { data: projects = [] } = useProjects()
@@ -36,6 +38,7 @@ export function TaskEditor({ task, defaultProjectId, defaultSectionId, onClose, 
       setDueDate(task.due_date ?? '')
       setDeadline(task.deadline ?? '')
       setPriority(task.priority)
+      setRecurrenceRule(task.recurrence_rule ?? null)
     }
   }, [task])
 
@@ -53,6 +56,8 @@ export function TaskEditor({ task, defaultProjectId, defaultSectionId, onClose, 
       due_date: dueDate || null,
       deadline: deadline || null,
       priority,
+      recurrence_rule: recurrenceRule,
+      recurrence_base_date: recurrenceRule && dueDate ? dueDate : null,
     }
 
     try {
@@ -147,6 +152,9 @@ export function TaskEditor({ task, defaultProjectId, defaultSectionId, onClose, 
             className="text-sm border border-accent-200 rounded-md px-2 py-1.5"
           />
         </div>
+
+        {/* Recurrence */}
+        <RecurrenceBuilder value={recurrenceRule} onChange={setRecurrenceRule} />
 
         {/* Priority */}
         <div className="flex items-center gap-1">

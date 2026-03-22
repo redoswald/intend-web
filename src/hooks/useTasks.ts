@@ -1,6 +1,12 @@
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
+import { getNextOccurrence } from '@/lib/recurrenceHelper'
 import type { Task, CreateTaskInput, UpdateTaskInput } from '@/types'
+
+export interface CompleteTaskResult {
+  completed: Task
+  nextTask: Task | null
+}
 
 interface UseTasksOptions {
   projectId?: string | null
@@ -164,19 +170,68 @@ export function useCompleteTask() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (taskOrId: Task | string): Promise<CompleteTaskResult> => {
+      // Resolve the full task if given just an ID
+      let task: Task
+      if (typeof taskOrId === 'string') {
+        const { data: fetched, error: fetchErr } = await supabase
+          .from('tasks')
+          .select('*')
+          .eq('id', taskOrId)
+          .single()
+        if (fetchErr) throw fetchErr
+        task = fetched as Task
+      } else {
+        task = taskOrId
+      }
+
+      // Mark done
       const { data, error } = await supabase
         .from('tasks')
         .update({
           status: 'done',
           completed_at: new Date().toISOString(),
         })
-        .eq('id', id)
+        .eq('id', task.id)
         .select()
         .single()
 
       if (error) throw error
-      return data as Task
+      const completed = data as Task
+
+      // Spawn next occurrence if recurring
+      let nextTask: Task | null = null
+      if (task.recurrence_rule) {
+        const afterDate = task.due_date ? new Date(task.due_date) : new Date()
+        const nextDate = getNextOccurrence(task.recurrence_rule, afterDate)
+
+        if (nextDate) {
+          const nextDueDate = nextDate.toISOString().split('T')[0]
+          const { data: newTask, error: createErr } = await supabase
+            .from('tasks')
+            .insert({
+              owner_id: task.owner_id,
+              title: task.title,
+              description: task.description,
+              project_id: task.project_id,
+              section_id: task.section_id,
+              parent_task_id: task.parent_task_id,
+              priority: task.priority,
+              due_date: nextDueDate,
+              due_time: task.due_time,
+              recurrence_rule: task.recurrence_rule,
+              recurrence_base_date: task.recurrence_base_date,
+              sort_order: task.sort_order,
+            })
+            .select()
+            .single()
+
+          if (createErr) throw createErr
+          nextTask = newTask as Task
+        }
+      }
+
+      return { completed, nextTask }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] })

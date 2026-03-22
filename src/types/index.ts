@@ -84,6 +84,8 @@ export interface CreateTaskInput {
   due_date?: string | null
   due_time?: string | null
   deadline?: string | null
+  recurrence_rule?: string | null
+  recurrence_base_date?: string | null
 }
 
 export interface UpdateTaskInput {
@@ -99,6 +101,8 @@ export interface UpdateTaskInput {
   blocked_by?: string | null
   sort_order?: number
   completed_at?: string | null
+  recurrence_rule?: string | null
+  recurrence_base_date?: string | null
 }
 
 export interface CreateProjectInput {
