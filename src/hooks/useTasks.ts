@@ -202,7 +202,9 @@ export function useCompleteTask() {
       // Spawn next occurrence if recurring
       let nextTask: Task | null = null
       if (task.recurrence_rule) {
-        const afterDate = task.due_date ? new Date(task.due_date + 'T12:00:00Z') : new Date()
+        const dueDateUtcNoon = task.due_date ? new Date(task.due_date + 'T12:00:00Z') : new Date()
+        const todayUtcNoon = new Date(new Date().toISOString().split('T')[0] + 'T12:00:00Z')
+        const afterDate = dueDateUtcNoon > todayUtcNoon ? dueDateUtcNoon : todayUtcNoon
         const nextDate = getNextOccurrence(task.recurrence_rule, afterDate)
 
         if (nextDate) {
