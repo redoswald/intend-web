@@ -50,6 +50,8 @@ export function TodayView() {
                   tasks={overdue}
                   showProject
                   onTaskClick={(task) => setEditingTask(task)}
+                  editingTask={editingTask}
+                  onEditClose={() => setEditingTask(null)}
                 />
               </section>
             )}
@@ -61,18 +63,11 @@ export function TodayView() {
                   tasks={today}
                   showProject
                   onTaskClick={(task) => setEditingTask(task)}
+                  editingTask={editingTask}
+                  onEditClose={() => setEditingTask(null)}
                 />
               </section>
             )}
-          </div>
-        )}
-
-        {editingTask && (
-          <div className="mt-4">
-            <TaskEditor
-              task={editingTask}
-              onClose={() => setEditingTask(null)}
-            />
           </div>
         )}
 

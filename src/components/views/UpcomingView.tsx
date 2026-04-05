@@ -49,18 +49,11 @@ export function UpcomingView() {
                   tasks={dateTasks}
                   showProject
                   onTaskClick={(task) => setEditingTask(task)}
+                  editingTask={editingTask}
+                  onEditClose={() => setEditingTask(null)}
                 />
               </section>
             ))}
-          </div>
-        )}
-
-        {editingTask && (
-          <div className="mt-4">
-            <TaskEditor
-              task={editingTask}
-              onClose={() => setEditingTask(null)}
-            />
           </div>
         )}
 

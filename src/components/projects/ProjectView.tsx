@@ -84,6 +84,9 @@ export function ProjectView() {
             <TaskList
               tasks={unsectionedTasks}
               onTaskClick={(task) => setEditingTask(task)}
+              editingTask={editingTask}
+              onEditClose={() => setEditingTask(null)}
+              editingTaskEditorProps={{ defaultProjectId: projectId }}
             />
           </div>
         )}
@@ -112,22 +115,12 @@ export function ProjectView() {
             key={section.id}
             section={section}
             projectId={projectId!}
+            editingTask={editingTask}
             setEditingTask={setEditingTask}
             addingTaskToSection={addingTaskToSection}
             setAddingTaskToSection={setAddingTaskToSection}
           />
         ))}
-
-        {/* Editing task overlay */}
-        {editingTask && (
-          <div className="mt-4">
-            <TaskEditor
-              task={editingTask}
-              defaultProjectId={projectId}
-              onClose={() => setEditingTask(null)}
-            />
-          </div>
-        )}
 
         {/* Spacer — pushes danger zone well below the fold */}
         <div className="h-[60vh]" />
@@ -236,6 +229,7 @@ export function ProjectView() {
 interface SectionBlockProps {
   section: Section
   projectId: string
+  editingTask: Task | null
   setEditingTask: (task: Task | null) => void
   addingTaskToSection: string | null
   setAddingTaskToSection: (id: string | null) => void
@@ -244,6 +238,7 @@ interface SectionBlockProps {
 function SectionBlock({
   section,
   projectId,
+  editingTask,
   setEditingTask,
   addingTaskToSection,
   setAddingTaskToSection,
@@ -291,6 +286,9 @@ function SectionBlock({
         tasks={tasks}
         onTaskClick={(task) => setEditingTask(task)}
         emptyMessage=""
+        editingTask={editingTask}
+        onEditClose={() => setEditingTask(null)}
+        editingTaskEditorProps={{ defaultProjectId: projectId }}
       />
 
       {/* Add task to section */}

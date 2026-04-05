@@ -32,16 +32,9 @@ export function InboxView() {
               tasks={tasks}
               onTaskClick={(task) => setEditingTask(task)}
               emptyMessage="Your inbox is empty"
+              editingTask={editingTask}
+              onEditClose={() => setEditingTask(null)}
             />
-
-            {editingTask && (
-              <div className="mt-4">
-                <TaskEditor
-                  task={editingTask}
-                  onClose={() => setEditingTask(null)}
-                />
-              </div>
-            )}
 
             {!showAddTask ? (
               <button
