@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { format, isToday, isPast, parseISO } from 'date-fns'
 import Markdown from 'react-markdown'
@@ -43,6 +44,7 @@ function setExpandedState(taskId: string, expanded: boolean) {
 }
 
 export function TaskItem({ task, showProject = false, onClick, draggable = true, depth = 0, defaultExpanded = false }: TaskItemProps) {
+  const navigate = useNavigate()
   const completeTask = useCompleteTask()
   const uncompleteTask = useUncompleteTask()
   const deleteTask = useDeleteTask()
@@ -219,13 +221,19 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
         {/* Meta info */}
         <div className="flex items-center gap-2 mt-0.5">
           {showProject && task.project && (
-            <span className="text-xs text-gray-500 flex items-center gap-1">
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                navigate(`/projects/${task.project_id}`)
+              }}
+              className="text-xs text-gray-500 hover:text-gray-700 hover:underline flex items-center gap-1"
+            >
               <span
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: task.project.color }}
               />
               {task.project.name}
-            </span>
+            </button>
           )}
           {hasSubtasks && (
             <button
