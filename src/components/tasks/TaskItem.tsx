@@ -62,7 +62,7 @@ export function TaskItem({ task, showProject = false, onClick, onTaskClick, edit
   })
 
   const isCompleted = task.status === 'done'
-  const isBlocked = !!task.blocked_by && !!task.blocking_task
+  const hasDependencies = task.dependencies && task.dependencies.length > 0
   const dueDate = task.due_date ? parseISO(task.due_date) : null
   const deadline = task.deadline ? parseISO(task.deadline) : null
   const isOverdue = dueDate && isPast(dueDate) && !isToday(dueDate) && !isCompleted
@@ -226,12 +226,12 @@ export function TaskItem({ task, showProject = false, onClick, onTaskClick, edit
 
         {/* Meta info */}
         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-          {isBlocked && (
-            <span className="text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded flex items-center gap-1">
+          {hasDependencies && task.dependencies!.map(dep => (
+            <span key={dep.id} className="text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded flex items-center gap-1">
               <BlockedIcon />
-              Blocked by: {task.blocking_task!.title}
+              {dep.title}
             </span>
-          )}
+          ))}
           {showProject && task.project && (
             <button
               onClick={(e) => {

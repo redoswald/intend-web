@@ -3,35 +3,57 @@ import { supabase } from '@/lib/supabase'
 import { getNextOccurrence } from '@/lib/recurrenceHelper'
 import type { Task, CreateTaskInput, UpdateTaskInput } from '@/types'
 
-// Resolve blocking_task titles — self-referential PostgREST joins are unreliable,
-// so we look up blockers manually and fetch any missing ones in a single batch.
-async function resolveBlockingTasks(tasks: Task[]): Promise<void> {
+// Resolve task dependencies from the junction table and attach as `dependencies` array
+async function resolveDependencies(tasks: Task[]): Promise<void> {
+  if (tasks.length === 0) return
+
+  const taskIds = tasks.map(t => t.id)
+
+  // Fetch all dependency rows for these tasks
+  const { data: deps } = await supabase
+    .from('task_dependencies')
+    .select('task_id, depends_on_task_id')
+    .in('task_id', taskIds)
+
+  if (!deps || deps.length === 0) {
+    for (const t of tasks) t.dependencies = []
+    return
+  }
+
+  // Build title lookup — first from current tasks, then fetch missing
   const titleMap = new Map<string, string>()
   for (const t of tasks) titleMap.set(t.id, t.title)
 
-  // Collect blocked_by IDs that aren't in the current result set
   const missingIds = new Set<string>()
-  for (const t of tasks) {
-    if (t.blocked_by && !titleMap.has(t.blocked_by)) {
-      missingIds.add(t.blocked_by)
-    }
+  for (const d of deps) {
+    if (!titleMap.has(d.depends_on_task_id)) missingIds.add(d.depends_on_task_id)
   }
 
-  // Batch-fetch missing blocker titles
   if (missingIds.size > 0) {
-    const { data } = await supabase
+    const { data: fetched } = await supabase
       .from('tasks')
       .select('id, title')
       .in('id', [...missingIds])
-    if (data) {
-      for (const row of data) titleMap.set(row.id, row.title)
+    if (fetched) {
+      for (const row of fetched) titleMap.set(row.id, row.title)
     }
   }
 
-  // Attach blocking_task to each task
+  // Group dependencies by task_id
+  const depsByTask = new Map<string, Pick<Task, 'id' | 'title'>[]>()
+  for (const d of deps) {
+    const title = titleMap.get(d.depends_on_task_id) ?? 'Unknown task'
+    const arr = depsByTask.get(d.task_id) ?? []
+    arr.push({ id: d.depends_on_task_id, title })
+    depsByTask.set(d.task_id, arr)
+  }
+
+  // Attach to tasks
   for (const t of tasks) {
-    if (t.blocked_by && titleMap.has(t.blocked_by)) {
-      t.blocking_task = { id: t.blocked_by, title: titleMap.get(t.blocked_by)! }
+    t.dependencies = depsByTask.get(t.id) ?? []
+    // Keep legacy field in sync for backwards compat
+    if (t.dependencies.length > 0) {
+      t.blocking_task = t.dependencies[0]
     }
   }
 }
@@ -87,7 +109,7 @@ export function useTasks(options: UseTasksOptions = {}) {
       if (error) throw error
 
       const allTasks = data as Task[]
-      await resolveBlockingTasks(allTasks)
+      await resolveDependencies(allTasks)
 
       // Build a map of task ID -> task
       const taskMap = new Map<string, Task>()
@@ -129,7 +151,7 @@ export function useTask(id: string | undefined) {
 
       if (error) throw error
       const task = data as Task
-      await resolveBlockingTasks([task])
+      await resolveDependencies([task])
       return task
     },
     enabled: !!id,
@@ -317,7 +339,7 @@ export function useAllProjectTasks(projectId: string | undefined) {
 
       if (error) throw error
       const tasks = data as Task[]
-      await resolveBlockingTasks(tasks)
+      await resolveDependencies(tasks)
       return tasks
     },
     enabled: !!projectId,
@@ -338,7 +360,7 @@ export function useCompletedTasks(limit: number = 100) {
 
       if (error) throw error
       const tasks = data as Task[]
-      await resolveBlockingTasks(tasks)
+      await resolveDependencies(tasks)
       return tasks
     },
   })
@@ -393,6 +415,44 @@ export function useTodayCount() {
 
       if (error) throw error
       return count ?? 0
+    },
+  })
+}
+
+// --- Task dependencies ---
+
+export function useAddDependency() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ taskId, dependsOnTaskId }: { taskId: string; dependsOnTaskId: string }) => {
+      const { error } = await supabase
+        .from('task_dependencies')
+        .insert({ task_id: taskId, depends_on_task_id: dependsOnTaskId })
+
+      if (error) throw error
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+    },
+  })
+}
+
+export function useRemoveDependency() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ taskId, dependsOnTaskId }: { taskId: string; dependsOnTaskId: string }) => {
+      const { error } = await supabase
+        .from('task_dependencies')
+        .delete()
+        .eq('task_id', taskId)
+        .eq('depends_on_task_id', dependsOnTaskId)
+
+      if (error) throw error
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
     },
   })
 }

@@ -71,7 +71,13 @@ export interface Task {
   // Computed/joined
   subtasks?: Task[]
   project?: Pick<Project, 'id' | 'name' | 'color'>
-  blocking_task?: Pick<Task, 'id' | 'title'>
+  blocking_task?: Pick<Task, 'id' | 'title'>  // legacy single blocker
+  dependencies?: Pick<Task, 'id' | 'title'>[] // multiple blockers
+}
+
+export interface TaskDependency {
+  task_id: string
+  depends_on_task_id: string
 }
 
 export interface CreateTaskInput {
