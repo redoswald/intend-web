@@ -3,6 +3,15 @@ import { supabase } from '@/lib/supabase'
 import { getNextOccurrence } from '@/lib/recurrenceHelper'
 import type { Task, CreateTaskInput, UpdateTaskInput } from '@/types'
 
+// Supabase self-referential joins may return an array instead of a single object
+function normalizeBlockingTask(rows: Record<string, unknown>[]): Task[] {
+  return rows.map(row => {
+    const bt = row.blocking_task
+    if (Array.isArray(bt)) row.blocking_task = bt[0] ?? null
+    return row as unknown as Task
+  })
+}
+
 export interface CompleteTaskResult {
   completed: Task
   nextTask: Task | null
@@ -53,7 +62,7 @@ export function useTasks(options: UseTasksOptions = {}) {
 
       if (error) throw error
 
-      const allTasks = data as Task[]
+      const allTasks = normalizeBlockingTask(data as Record<string, unknown>[])
 
       // Build a map of task ID -> task
       const taskMap = new Map<string, Task>()
@@ -94,7 +103,7 @@ export function useTask(id: string | undefined) {
         .single()
 
       if (error) throw error
-      return data as Task
+      return normalizeBlockingTask([data as Record<string, unknown>])[0]
     },
     enabled: !!id,
   })
@@ -280,7 +289,7 @@ export function useAllProjectTasks(projectId: string | undefined) {
         .order('sort_order')
 
       if (error) throw error
-      return data as Task[]
+      return normalizeBlockingTask(data as Record<string, unknown>[])
     },
     enabled: !!projectId,
   })
@@ -299,7 +308,7 @@ export function useCompletedTasks(limit: number = 100) {
         .limit(limit)
 
       if (error) throw error
-      return data as Task[]
+      return normalizeBlockingTask(data as Record<string, unknown>[])
     },
   })
 }
