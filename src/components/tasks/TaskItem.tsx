@@ -13,6 +13,7 @@ interface TaskItemProps {
   showProject?: boolean
   onClick?: () => void
   draggable?: boolean
+  onDragStart?: (e: React.DragEvent) => void
   depth?: number
   defaultExpanded?: boolean
 }
@@ -43,7 +44,7 @@ function setExpandedState(taskId: string, expanded: boolean) {
   }
 }
 
-export function TaskItem({ task, showProject = false, onClick, draggable = true, depth = 0, defaultExpanded = false }: TaskItemProps) {
+export function TaskItem({ task, showProject = false, onClick, draggable = true, onDragStart: onDragStartProp, depth = 0, defaultExpanded = false }: TaskItemProps) {
   const navigate = useNavigate()
   const completeTask = useCompleteTask()
   const uncompleteTask = useUncompleteTask()
@@ -143,7 +144,7 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
       <div
         onClick={onClick}
         draggable={draggable && depth === 0}
-        onDragStart={handleDragStart}
+        onDragStart={onDragStartProp || handleDragStart}
         style={{ paddingLeft: depth > 0 ? `${depth * 24}px` : undefined }}
         className={cn(
           'group flex items-start gap-3 px-3 py-2 rounded-md transition-colors',

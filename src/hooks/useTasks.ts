@@ -356,3 +356,75 @@ export function useTodayCount() {
     },
   })
 }
+
+// --- Task reorder (drag-and-drop) ---
+
+export interface TaskReorderUpdate {
+  id: string
+  sort_order: number
+  parent_task_id?: string | null
+}
+
+/**
+ * Compute sort_order updates to insert `draggedId` near `targetId`
+ * in the given zone ('above' | 'below'), under `newParentId`.
+ */
+export function computeTaskReorder(
+  tasks: Task[],
+  draggedId: string,
+  targetId: string,
+  zone: 'above' | 'below',
+  newParentTaskId: string | null,
+): TaskReorderUpdate[] {
+  const siblings = tasks
+    .filter(t => t.parent_task_id === newParentTaskId && t.id !== draggedId)
+    .sort((a, b) => a.sort_order - b.sort_order)
+
+  const targetIndex = siblings.findIndex(t => t.id === targetId)
+  const insertIndex = zone === 'above' ? targetIndex : targetIndex + 1
+
+  const dragged = tasks.find(t => t.id === draggedId)
+  if (!dragged) return []
+
+  const newOrder = [...siblings]
+  newOrder.splice(insertIndex < 0 ? newOrder.length : insertIndex, 0, dragged)
+
+  const updates: TaskReorderUpdate[] = []
+  newOrder.forEach((t, i) => {
+    const isDragged = t.id === draggedId
+    const sortChanged = t.sort_order !== i
+    const parentChanged = isDragged && t.parent_task_id !== newParentTaskId
+
+    if (sortChanged || parentChanged) {
+      const update: TaskReorderUpdate = { id: t.id, sort_order: i }
+      if (isDragged) update.parent_task_id = newParentTaskId
+      updates.push(update)
+    }
+  })
+
+  return updates
+}
+
+export function useReorderTask() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (updates: TaskReorderUpdate[]) => {
+      const results = await Promise.all(
+        updates.map(({ id, sort_order, parent_task_id }) => {
+          const patch: Record<string, unknown> = { sort_order }
+          if (parent_task_id !== undefined) patch.parent_task_id = parent_task_id
+          return supabase
+            .from('tasks')
+            .update(patch)
+            .eq('id', id)
+        }),
+      )
+      const firstError = results.find(r => r.error)
+      if (firstError?.error) throw firstError.error
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+    },
+  })
+}

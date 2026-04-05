@@ -92,6 +92,7 @@ export interface UpdateTaskInput {
   title?: string
   project_id?: string | null
   section_id?: string | null
+  parent_task_id?: string | null
   description?: string | null
   status?: TaskStatus
   priority?: number
