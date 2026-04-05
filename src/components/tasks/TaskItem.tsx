@@ -224,7 +224,7 @@ export function TaskItem({ task, showProject = false, onClick, draggable = true,
             <button
               onClick={(e) => {
                 e.stopPropagation()
-                navigate(`/projects/${task.project_id}`)
+                navigate(`/project/${task.project_id}`)
               }}
               className="text-xs text-gray-500 hover:text-gray-700 hover:underline flex items-center gap-1"
             >
