@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { toast } from 'sonner'
 import { useProjects } from '@/hooks/useProjects'
-import { useCreateTask, useUpdateTask, useCompleteTask, useUncompleteTask, useDeleteTask } from '@/hooks/useTasks'
+import { useCreateTask, useUpdateTask, useCompleteTask, useUncompleteTask, useDeleteTask, useSearchTasks } from '@/hooks/useTasks'
 import { RecurrenceBuilder } from './RecurrenceBuilder'
 import type { Task, CreateTaskInput } from '@/types'
 
@@ -23,6 +23,8 @@ export function TaskEditor({ task, defaultProjectId, defaultSectionId, defaultDu
   const [deadline, setDeadline] = useState(task?.deadline ?? '')
   const [priority, setPriority] = useState(task?.priority ?? 0)
   const [recurrenceRule, setRecurrenceRule] = useState<string | null>(task?.recurrence_rule ?? null)
+  const [blockedBy, setBlockedBy] = useState<string | null>(task?.blocked_by ?? null)
+  const [blockedByTitle, setBlockedByTitle] = useState<string | null>(task?.blocking_task?.title ?? null)
   const [error, setError] = useState<string | null>(null)
 
   const { data: projects = [] } = useProjects()
@@ -53,6 +55,8 @@ export function TaskEditor({ task, defaultProjectId, defaultSectionId, defaultDu
       setDeadline(task.deadline ?? '')
       setPriority(task.priority)
       setRecurrenceRule(task.recurrence_rule ?? null)
+      setBlockedBy(task.blocked_by ?? null)
+      setBlockedByTitle(task.blocking_task?.title ?? null)
     }
   }, [task])
 
@@ -76,7 +80,7 @@ export function TaskEditor({ task, defaultProjectId, defaultSectionId, defaultDu
 
     try {
       if (isEditing) {
-        await updateTask.mutateAsync({ id: task.id, ...data })
+        await updateTask.mutateAsync({ id: task.id, ...data, blocked_by: blockedBy })
       } else {
         await createTask.mutateAsync(data)
         toast('Task created')
@@ -187,6 +191,16 @@ export function TaskEditor({ task, defaultProjectId, defaultSectionId, defaultDu
           ))}
         </div>
       </div>
+
+      {/* Blocked by — only when editing */}
+      {isEditing && (
+        <BlockedByPicker
+          taskId={task.id}
+          blockedBy={blockedBy}
+          blockedByTitle={blockedByTitle}
+          onChange={(id, title) => { setBlockedBy(id); setBlockedByTitle(title) }}
+        />
+      )}
 
       {/* Subtasks — only when editing */}
       {isEditing && (
@@ -329,5 +343,115 @@ function SubtaskSection({ parentTask }: { parentTask: Task }) {
         </button>
       )}
     </div>
+  )
+}
+
+interface BlockedByPickerProps {
+  taskId: string
+  blockedBy: string | null
+  blockedByTitle: string | null
+  onChange: (id: string | null, title: string | null) => void
+}
+
+function BlockedByPicker({ taskId, blockedBy, blockedByTitle, onChange }: BlockedByPickerProps) {
+  const [search, setSearch] = useState('')
+  const [showSearch, setShowSearch] = useState(false)
+  const { data: results = [] } = useSearchTasks(search)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Filter out self from results
+  const filteredResults = results.filter(t => t.id !== taskId)
+
+  useEffect(() => {
+    if (!showSearch) return
+    function handleClick(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowSearch(false)
+        setSearch('')
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [showSearch])
+
+  if (blockedBy && blockedByTitle) {
+    return (
+      <div className="flex items-center gap-2">
+        <LinkIcon />
+        <span className="text-xs text-amber-600">Blocked by:</span>
+        <span className="text-xs font-medium text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
+          {blockedByTitle}
+        </span>
+        <button
+          type="button"
+          onClick={() => onChange(null, null)}
+          className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div ref={dropdownRef} className="relative">
+      {!showSearch ? (
+        <button
+          type="button"
+          onClick={() => setShowSearch(true)}
+          className="flex items-center gap-2 text-xs text-gray-400 hover:text-amber-600 transition-colors"
+        >
+          <LinkIcon />
+          Add dependency...
+        </button>
+      ) : (
+        <div>
+          <div className="flex items-center gap-2">
+            <LinkIcon />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search for a task to block on..."
+              className="flex-1 text-sm border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-amber-500 placeholder-gray-400"
+              autoFocus
+            />
+          </div>
+          {filteredResults.length > 0 && (
+            <div className="absolute z-10 mt-1 left-6 right-0 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+              {filteredResults.map(t => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => {
+                    onChange(t.id, t.title)
+                    setShowSearch(false)
+                    setSearch('')
+                  }}
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-amber-50 transition-colors flex items-center gap-2"
+                >
+                  <span className="truncate">{t.title}</span>
+                  {t.project && (
+                    <span className="text-xs text-gray-400 flex-shrink-0">
+                      {t.project.name}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function LinkIcon() {
+  return (
+    <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+    </svg>
   )
 }

@@ -26,7 +26,7 @@ export function useTasks(options: UseTasksOptions = {}) {
       // Fetch all open tasks (both parents and children)
       let query = supabase
         .from('tasks')
-        .select('*, project:projects(id, name, color)')
+        .select('*, project:projects(id, name, color), blocking_task:tasks!blocked_by(id, title)')
         .eq('status', 'open')
         .order('sort_order')
 
@@ -89,7 +89,7 @@ export function useTask(id: string | undefined) {
 
       const { data, error } = await supabase
         .from('tasks')
-        .select('*, subtasks:tasks(*), project:projects(id, name, color)')
+        .select('*, subtasks:tasks(*), project:projects(id, name, color), blocking_task:tasks!blocked_by(id, title)')
         .eq('id', id)
         .single()
 
@@ -274,7 +274,7 @@ export function useAllProjectTasks(projectId: string | undefined) {
 
       const { data, error } = await supabase
         .from('tasks')
-        .select('*, project:projects(id, name, color)')
+        .select('*, project:projects(id, name, color), blocking_task:tasks!blocked_by(id, title)')
         .eq('project_id', projectId)
         .order('status')
         .order('sort_order')
@@ -293,7 +293,7 @@ export function useCompletedTasks(limit: number = 100) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('tasks')
-        .select('*, project:projects(id, name, color)')
+        .select('*, project:projects(id, name, color), blocking_task:tasks!blocked_by(id, title)')
         .eq('status', 'done')
         .order('completed_at', { ascending: false })
         .limit(limit)
