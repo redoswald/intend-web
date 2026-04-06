@@ -340,13 +340,18 @@ function SubtaskSection({ parentTask }: { parentTask: Task }) {
 function DependencySection({ task }: { task: Task }) {
   const [search, setSearch] = useState('')
   const [showSearch, setShowSearch] = useState(false)
+  const [localDeps, setLocalDeps] = useState<Pick<Task, 'id' | 'title'>[]>(task.dependencies ?? [])
   const { data: results = [] } = useSearchTasks(search)
   const addDependency = useAddDependency()
   const removeDependency = useRemoveDependency()
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const dependencies = task.dependencies ?? []
-  const depIds = new Set(dependencies.map(d => d.id))
+  // Sync from props when server data updates
+  useEffect(() => {
+    setLocalDeps(task.dependencies ?? [])
+  }, [task.dependencies])
+
+  const depIds = new Set(localDeps.map(d => d.id))
 
   // Filter out self and existing dependencies from search results
   const filteredResults = results.filter(t => t.id !== task.id && !depIds.has(t.id))
@@ -371,14 +376,17 @@ function DependencySection({ task }: { task: Task }) {
       </div>
 
       {/* Existing dependencies */}
-      {dependencies.length > 0 && (
+      {localDeps.length > 0 && (
         <div className="flex flex-wrap gap-1.5 ml-5">
-          {dependencies.map(dep => (
+          {localDeps.map(dep => (
             <span key={dep.id} className="text-xs font-medium text-amber-700 bg-amber-50 px-2 py-1 rounded flex items-center gap-1.5">
               {dep.title}
               <button
                 type="button"
-                onClick={() => removeDependency.mutate({ taskId: task.id, dependsOnTaskId: dep.id })}
+                onClick={() => {
+                  setLocalDeps(prev => prev.filter(d => d.id !== dep.id))
+                  removeDependency.mutate({ taskId: task.id, dependsOnTaskId: dep.id })
+                }}
                 className="text-amber-400 hover:text-red-500 transition-colors"
               >
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -420,6 +428,7 @@ function DependencySection({ task }: { task: Task }) {
                     key={t.id}
                     type="button"
                     onClick={() => {
+                      setLocalDeps(prev => [...prev, { id: t.id, title: t.title }])
                       addDependency.mutate({ taskId: task.id, dependsOnTaskId: t.id })
                       setSearch('')
                     }}
