@@ -45,7 +45,23 @@
       "Bash(npm uninstall:*)",
       "Bash(npx shadcn@latest:*)",
       "Bash(npm run:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(node -e \"const rrule = require\\(''rrule''\\); console.log\\(Object.keys\\(rrule\\)\\)\")",
+      "Bash(node -e \"import\\(''rrule''\\).then\\(m => console.log\\(Object.keys\\(m\\)\\)\\)\")",
+      "Bash(source .env)",
+      "Bash(export VITE_SUPABASE_URL VITE_SUPABASE_ANON_KEY)",
+      "Bash(supabase --version)",
+      "Read(//Users/aaron/**)",
+      "Bash(npm list:*)",
+      "Bash(brew install:*)",
+      "Bash(supabase projects:*)",
+      "Bash(supabase init:*)",
+      "Bash(supabase link:*)",
+      "Bash(supabase migration:*)",
+      "Bash(supabase db:*)",
+      "mcp__supabase__list_migrations",
+      "mcp__supabase__execute_sql",
+      "mcp__supabase__apply_migration"
     ]
   }
 }
