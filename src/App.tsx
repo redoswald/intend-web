@@ -12,6 +12,7 @@ import { ArchiveView } from '@/components/views/ArchiveView'
 import { ProjectView } from '@/components/projects/ProjectView'
 import { NewProjectPage } from '@/components/projects/NewProjectPage'
 import { SettingsPage } from '@/components/settings/SettingsPage'
+import { AcceptSharePage } from '@/components/projects/AcceptSharePage'
 import { Toaster } from '@/components/ui/sonner'
 
 export default function App() {
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/project/:projectId" element={<ProjectView />} />
           <Route path="/projects/new" element={<NewProjectPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/share/:token" element={<AcceptSharePage />} />
         </Route>
 
         {/* Fallback */}

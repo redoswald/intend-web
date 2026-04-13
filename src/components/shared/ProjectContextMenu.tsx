@@ -5,6 +5,7 @@ interface ProjectContextMenuProps {
   position: { x: number; y: number }
   currentColor?: string
   onClose: () => void
+  onShare: () => void
   onRename: () => void
   onMove: () => void
   onChangeColor: (color: string) => void
@@ -12,12 +13,12 @@ interface ProjectContextMenuProps {
   onDelete: () => void
 }
 
-export function ProjectContextMenu({ position, currentColor, onClose, onRename, onMove, onChangeColor, onArchive, onDelete }: ProjectContextMenuProps) {
+export function ProjectContextMenu({ position, currentColor, onClose, onShare, onRename, onMove, onChangeColor, onArchive, onDelete }: ProjectContextMenuProps) {
   const [showColors, setShowColors] = useState(false)
 
   // Clamp to viewport
   const menuWidth = 160
-  const menuHeight = showColors ? 220 : 192
+  const menuHeight = showColors ? 252 : 224
   const x = Math.min(position.x, window.innerWidth - menuWidth - 8)
   const y = Math.min(position.y, window.innerHeight - menuHeight - 8)
 
@@ -41,6 +42,18 @@ export function ProjectContextMenu({ position, currentColor, onClose, onRename, 
         className="fixed z-50 bg-white border border-gray-200 rounded-md shadow-lg py-1 min-w-[160px]"
         style={{ left: x, top: y }}
       >
+        <button
+          onClick={() => {
+            onShare()
+            onClose()
+          }}
+          className="w-full px-3 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+        >
+          <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          Share project
+        </button>
         <button
           onClick={() => {
             onRename()

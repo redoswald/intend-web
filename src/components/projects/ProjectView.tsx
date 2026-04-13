@@ -10,6 +10,7 @@ import { useProject, useProjects, useUpdateProject, useDeleteProject, useArchive
 import { useTasks } from '@/hooks/useTasks'
 import { useSections, useDeleteSection, Section } from '@/hooks/useSections'
 import { PROJECT_COLORS } from '@/lib/constants'
+import { ShareSection } from './ShareSection'
 import type { Task } from '@/types'
 
 export function ProjectView() {
@@ -124,6 +125,9 @@ export function ProjectView() {
 
         {/* Spacer — pushes danger zone well below the fold */}
         <div className="h-[60vh]" />
+
+        {/* Sharing */}
+        <ShareSection projectId={projectId!} project={project} />
 
         {/* Project color */}
         <div className="mb-6 border border-gray-200 rounded-lg bg-gray-50/50 p-4">

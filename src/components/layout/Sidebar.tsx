@@ -356,6 +356,14 @@ export function Sidebar({
           position={contextMenu}
           currentColor={deleteTarget.color}
           onClose={() => setContextMenu(null)}
+          onShare={() => {
+            if (deleteTarget) {
+              navigate(`/project/${deleteTarget.id}`)
+              setTimeout(() => document.getElementById('sharing')?.scrollIntoView({ behavior: 'smooth' }), 100)
+            }
+            setContextMenu(null)
+            setDeleteTarget(null)
+          }}
           onRename={handleContextMenuRename}
           onChangeColor={(color) => {
             updateProject.mutate({ id: deleteTarget.id, color })
@@ -472,6 +480,7 @@ interface ProjectItemProps {
 }
 
 function ProjectItem({ project, depth, onClick, onTaskDrop, onProjectDrop, onContextMenu, renameTargetId, onRename, onCancelRename, dragIndicator, onDragIndicator, draggedIdRef }: ProjectItemProps) {
+  const { user } = useAuth()
   const [expanded, setExpanded] = useState(true)
   const [isTaskDragOver, setIsTaskDragOver] = useState(false)
   const isRenaming = renameTargetId === project.id
@@ -673,6 +682,11 @@ function ProjectItem({ project, depth, onClick, onTaskDrop, onProjectDrop, onCon
               style={{ backgroundColor: project.color }}
             />
             <span className="truncate">{project.name}</span>
+            {project.owner_id !== user?.id && (
+              <svg className="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            )}
           </NavLink>
         )}
       </div>

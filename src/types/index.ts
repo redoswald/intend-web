@@ -36,6 +36,17 @@ export interface ProjectShare {
   user?: Profile
 }
 
+export interface ProjectShareLink {
+  id: string
+  project_id: string
+  created_by: string
+  token: string
+  permission: SharePermission
+  expires_at: string | null
+  is_active: boolean
+  created_at: string
+}
+
 export interface Section {
   id: string
   project_id: string

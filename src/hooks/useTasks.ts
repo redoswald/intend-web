@@ -212,19 +212,17 @@ export function useUpdateTask() {
 
   return useMutation({
     mutationFn: async ({ id, ...input }: UpdateTaskInput & { id: string }) => {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('tasks')
         .update(input)
         .eq('id', id)
-        .select()
-        .single()
 
       if (error) throw error
-      return data as Task
+      return id
     },
-    onSuccess: (data) => {
+    onSuccess: (id) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] })
-      queryClient.invalidateQueries({ queryKey: ['task', data.id] })
+      queryClient.invalidateQueries({ queryKey: ['task', id] })
     },
   })
 }
@@ -267,18 +265,16 @@ export function useCompleteTask() {
       }
 
       // Mark done
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('tasks')
         .update({
           status: 'done',
           completed_at: new Date().toISOString(),
         })
         .eq('id', task.id)
-        .select()
-        .single()
 
       if (error) throw error
-      const completed = data as Task
+      const completed = { ...task, status: 'done' as const, completed_at: new Date().toISOString() }
 
       // Spawn next occurrence if recurring
       let nextTask: Task | null = null
@@ -327,18 +323,15 @@ export function useUncompleteTask() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('tasks')
         .update({
           status: 'open',
           completed_at: null,
         })
         .eq('id', id)
-        .select()
-        .single()
 
       if (error) throw error
-      return data as Task
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] })
