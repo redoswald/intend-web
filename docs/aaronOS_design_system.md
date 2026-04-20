@@ -1,6 +1,6 @@
 # aaronOS Design System
 
-> The shared design language for All Friends, Opus, and future aaronOS apps.
+> The shared design language for Tend, Intend, and future aaronOS apps.
 
 ---
 
@@ -22,8 +22,8 @@ Each app owns a **one-liner** and an **accent color**. Everything else is shared
 
 | App | One-liner | Accent Color |
 |-----|-----------|-------------|
-| All Friends | "Be the friend you wish you had" | Coral `#FF6B6B` |
-| Opus | "Get things done, beautifully" | Warm Orange `#F97316` |
+| Tend | "Be the friend you wish you had" | Coral `#FF6B6B` |
+| Intend | "Get things done, beautifully" | Warm Orange `#F97316` |
 | *(Future app)* | *(TBD)* | *(Pick from approved palette)* |
 
 The accent color is the *only* thing that meaningfully changes between apps. Typography, spacing, neutrals, layout, component shapes, and interaction patterns are identical.
@@ -80,15 +80,15 @@ Teal is the shared "friendly" color. Use it for success states, secondary highli
 | `--color-error` | `#EF4444` | Errors, destructive actions |
 | `--color-info` | `var(--teal-300)` | Informational highlights |
 
-Note: `--color-error` is intentionally *not* the accent coral, even in All Friends. Error red should be universally recognizable and distinct from brand color. Using `#EF4444` (a cooler, standard red) prevents confusion between "this is the brand" and "something went wrong."
+Note: `--color-error` is intentionally *not* the accent coral, even in Tend. Error red should be universally recognizable and distinct from brand color. Using `#EF4444` (a cooler, standard red) prevents confusion between "this is the brand" and "something went wrong."
 
 ### Accent Layer (Per-App)
 
 Each app sets these variables. Components reference `--accent-*` and automatically adopt the app's personality.
 
 ```css
-/* All Friends */
-:root[data-app="friends"] {
+/* Tend */
+:root[data-app="tend"] {
   --accent-50:  #FFE5E5;
   --accent-100: #FFCCCC;
   --accent-200: #FF9999;
@@ -98,8 +98,8 @@ Each app sets these variables. Components reference `--accent-*` and automatical
   --accent-shadow: rgba(255, 107, 107, 0.3);
 }
 
-/* Opus */
-:root[data-app="opus"] {
+/* Intend */
+:root[data-app="intend"] {
   --accent-50:  #FFF7ED;
   --accent-100: #FFEDD5;
   --accent-200: #FED7AA;
@@ -217,7 +217,7 @@ Every app shares this structure:
 │                       │                              │
 │ ┌───────────────────┐ │  ┌──────────────────────────┐│
 │ │ App Switcher      │ │  │  Page Header             ││
-│ │ [Logo] All Friends│ │  │  "Dashboard"             ││
+│ │ [Logo] Tend│ │  │  "Dashboard"             ││
 │ └───────────────────┘ │  └──────────────────────────┘│
 │                       │                              │
 │  Navigation           │  ┌──────────────────────────┐│
@@ -277,7 +277,7 @@ The sidebar has three zones, top to bottom:
 
 **Zone 2 — Navigation (middle, scrollable)**
 - Primary nav items (Dashboard, Contacts, etc.)
-- Grouped sections with labels (e.g., "PROJECTS" in Opus)
+- Grouped sections with labels (e.g., "PROJECTS" in Intend)
 - Nested items indented with `padding-left: var(--space-8)`
 - Counts/badges right-aligned (e.g., "Today 12")
 
@@ -784,15 +784,15 @@ Lives at the top of the sidebar (Zone 1). Minimal — just the current app's ide
 **Collapsed state:**
 ```
 ┌─────────────────────────┐
-│ [Icon]  All Friends  ▾  │
+│ [Icon]  Tend  ▾  │
 └─────────────────────────┘
 ```
 
 **Expanded dropdown:**
 ```
 ┌─────────────────────────┐
-│ ✓ All Friends           │
-│   Opus                  │
+│ ✓ Tend           │
+│   Intend                  │
 │ ──────────────────────  │
 │   Account settings      │
 └─────────────────────────┘
@@ -947,7 +947,7 @@ These are required before either app goes live with the new design system:
 
 ## 12. Migration Guide
 
-### All Friends (closer to target)
+### Tend (closer to target)
 
 **Do first — layout migration:**
 - [ ] Migrate from top nav to sidebar layout with resize-by-drag
@@ -969,11 +969,11 @@ These are required before either app goes live with the new design system:
 **Deferred:**
 - [ ] Dark mode (CSS variable architecture already supports it, but not v1)
 
-### Opus (further from target)
+### Intend (further from target)
 
 **Do first — foundation:**
 - [ ] Upgrade Tailwind v3.4 → v4 (CSS-first config, `@theme` directive replaces `tailwind.config.js`)
-- [ ] Install shadcn/ui (new-york style, to match All Friends) and migrate hand-rolled components
+- [ ] Install shadcn/ui (new-york style, to match Tend) and migrate hand-rolled components
 - [ ] Switch from system fonts to DM Sans + Geist Mono (add via Google Fonts or next/font if migrating to Next.js)
 - [ ] Switch from hex colors to CSS custom properties using `--accent-*` and shared palette tokens
 - [ ] Replace clsx with cn() (clsx + twMerge)
@@ -1006,7 +1006,7 @@ These are required before either app goes live with the new design system:
 
 - **No pure black.** Darkest text is `var(--gray-950)`. Darkest background (dark mode) is `#111118`.
 - **No sharp corners** on containers, buttons, or cards. Inner data elements (table cells, code) can be rectangular.
-- **No accent color for errors.** Coral ≠ error red in All Friends. Orange ≠ warning amber in Opus. Semantic colors are separate.
+- **No accent color for errors.** Coral ≠ error red in Tend. Orange ≠ warning amber in Intend. Semantic colors are separate.
 - **No competing fonts.** DM Sans only. No mixing in other sans-serif fonts.
 - **No unshadowed modals.** Every elevated surface has a shadow. Flat overlapping elements create visual confusion.
 - **No silent actions.** Every user-initiated mutation (create, update, delete) gets a toast or inline confirmation.

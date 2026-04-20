@@ -1,13 +1,13 @@
 #!/usr/bin/env npx tsx
 /**
- * Sync Todoist data to Opus (one-way: Todoist → Opus)
+ * Sync Todoist data to Intend (one-way: Todoist → Intend)
  *
  * Usage:
  *   npx tsx scripts/sync-todoist.ts <TODOIST_API_TOKEN> [EMAIL] [PASSWORD]
  *
  * What it does:
  *   1. Fetches all projects, sections, and tasks from Todoist
- *   2. Upserts into Opus (updates existing records, creates new ones)
+ *   2. Upserts into Intend (updates existing records, creates new ones)
  *   3. Uses todoist_id to track records - no duplicates!
  *
  * Safe to run repeatedly - designed for "sync button" use case.
@@ -134,7 +134,7 @@ function convertColor(todoistColor: string): string {
 // ---------------------------------------------------------------------------
 // Priority Mapping
 // Todoist: 1 = lowest (none), 2 = low, 3 = medium, 4 = urgent (high)
-// Opus:    0 = none,          1 = low, 2 = medium, 3 = high
+// Intend:    0 = none,          1 = low, 2 = medium, 3 = high
 // ---------------------------------------------------------------------------
 
 function convertPriority(todoistPriority: number): number {
@@ -223,7 +223,7 @@ interface SyncStats {
   tasks: { created: number; updated: number; unchanged: number };
 }
 
-async function syncToOpus(
+async function syncToIntend(
   todoistToken: string,
   supabase: SupabaseClient,
   userId: string
@@ -237,7 +237,7 @@ async function syncToOpus(
   // Fetch all Todoist data
   const { projects, sections, tasks } = await fetchAllTodoistData(todoistToken);
 
-  // Fetch existing Opus data with todoist_ids
+  // Fetch existing Intend data with todoist_ids
   const [existingProjects, existingSections, existingTasks] = await Promise.all([
     supabase.from('projects').select('id, todoist_id').eq('owner_id', userId),
     supabase.from('sections').select('id, todoist_id, project_id'),
@@ -303,7 +303,7 @@ async function syncToOpus(
           ? projectMap.get(p.parent_id) || null
           : null;
 
-      const existingOpusId = projectMap.get(p.id);
+      const existingIntendId = projectMap.get(p.id);
       const projectData = {
         owner_id: userId,
         parent_id: opusParentId,
@@ -315,12 +315,12 @@ async function syncToOpus(
         todoist_id: p.id,
       };
 
-      if (existingOpusId) {
+      if (existingIntendId) {
         // Update existing
         const { error } = await supabase
           .from('projects')
           .update(projectData)
-          .eq('id', existingOpusId);
+          .eq('id', existingIntendId);
 
         if (error) {
           console.error(`  ✗ Failed to update project "${p.name}":`, error.message);
@@ -366,7 +366,7 @@ async function syncToOpus(
       continue;
     }
 
-    const existingOpusId = sectionMap.get(s.id);
+    const existingIntendId = sectionMap.get(s.id);
     const sectionData = {
       project_id: opusProjectId,
       name: s.name,
@@ -374,11 +374,11 @@ async function syncToOpus(
       todoist_id: s.id,
     };
 
-    if (existingOpusId) {
+    if (existingIntendId) {
       const { error } = await supabase
         .from('sections')
         .update(sectionData)
-        .eq('id', existingOpusId);
+        .eq('id', existingIntendId);
 
       if (error) {
         console.error(`  ✗ Failed to update section "${s.name}":`, error.message);
@@ -444,7 +444,7 @@ async function syncToOpus(
       const { due_date, due_time, recurrence_rule, recurrence_base_date } = parseDue(t.due);
       const deadline = t.deadline?.date || null;
 
-      const existingOpusId = taskMap.get(t.id);
+      const existingIntendId = taskMap.get(t.id);
       const taskData = {
         owner_id: userId,
         project_id: opusProjectId,
@@ -466,11 +466,11 @@ async function syncToOpus(
       const prefix = isInboxTask ? '📥' : '';
       const titlePreview = t.content.slice(0, 40) + (t.content.length > 40 ? '...' : '');
 
-      if (existingOpusId) {
+      if (existingIntendId) {
         const { error } = await supabase
           .from('tasks')
           .update(taskData)
-          .eq('id', existingOpusId);
+          .eq('id', existingIntendId);
 
         if (error) {
           console.error(`  ✗ Failed to update task "${t.content}":`, error.message);
@@ -552,7 +552,7 @@ async function main() {
       userId = data.user.id;
     } else {
       supabase = createClient(supabaseUrl, supabaseKey);
-      console.log('\nLog in to your Opus account:');
+      console.log('\nLog in to your Intend account:');
       const userEmail = await prompt('  Email: ');
       const userPassword = await prompt('  Password: ');
 
@@ -569,7 +569,7 @@ async function main() {
       userId = data.user.id;
     }
 
-    const stats = await syncToOpus(token, supabase, userId);
+    const stats = await syncToIntend(token, supabase, userId);
 
     // Summary
     console.log('\n' + '='.repeat(60));

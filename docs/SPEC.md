@@ -1,4 +1,4 @@
-# Todopus — Product Specification
+# Intend — Product Specification
 
 ## Vision
 
@@ -38,7 +38,7 @@ With Supabase, you don't need a separate Express backend for most operations. Th
 ### Project Structure
 
 ```
-todopus/
+intend-web/
 ├── src/
 │   ├── components/
 │   │   ├── layout/

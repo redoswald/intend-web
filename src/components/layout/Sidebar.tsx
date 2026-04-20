@@ -426,7 +426,7 @@ function NavItem({ to, icon, label, count, onClick, onTaskDrop }: NavItemProps) 
 
   function handleDragOver(e: React.DragEvent) {
     if (!onTaskDrop) return
-    if (e.dataTransfer.types.includes('application/opus-task')) {
+    if (e.dataTransfer.types.includes('application/intend-task')) {
       e.preventDefault()
       e.dataTransfer.dropEffect = 'move'
       setIsDragOver(true)
@@ -440,7 +440,7 @@ function NavItem({ to, icon, label, count, onClick, onTaskDrop }: NavItemProps) 
   function handleDrop(e: React.DragEvent) {
     if (!onTaskDrop) return
     setIsDragOver(false)
-    const data = e.dataTransfer.getData('application/opus-task')
+    const data = e.dataTransfer.getData('application/intend-task')
     if (data) {
       const { id } = JSON.parse(data)
       onTaskDrop(id)
@@ -540,14 +540,14 @@ function ProjectItem({ project, depth, onClick, onTaskDrop, onProjectDrop, onCon
   }, [])
 
   function handleDragStart(e: React.DragEvent) {
-    e.dataTransfer.setData('application/opus-project', JSON.stringify({ id: project.id, name: project.name }))
+    e.dataTransfer.setData('application/intend-project', JSON.stringify({ id: project.id, name: project.name }))
     e.dataTransfer.effectAllowed = 'move'
     if (draggedIdRef) draggedIdRef.current = project.id
   }
 
   function handleDragOver(e: React.DragEvent) {
     // Task drag — simple highlight
-    if (e.dataTransfer.types.includes('application/opus-task')) {
+    if (e.dataTransfer.types.includes('application/intend-task')) {
       e.preventDefault()
       e.dataTransfer.dropEffect = 'move'
       setIsTaskDragOver(true)
@@ -555,7 +555,7 @@ function ProjectItem({ project, depth, onClick, onTaskDrop, onProjectDrop, onCon
     }
 
     // Project drag — zone detection
-    if (e.dataTransfer.types.includes('application/opus-project')) {
+    if (e.dataTransfer.types.includes('application/intend-project')) {
       e.preventDefault()
       e.dataTransfer.dropEffect = 'move'
       if (isSelf) return
@@ -596,7 +596,7 @@ function ProjectItem({ project, depth, onClick, onTaskDrop, onProjectDrop, onCon
     setIsTaskDragOver(false)
 
     // Task drop
-    const taskData = e.dataTransfer.getData('application/opus-task')
+    const taskData = e.dataTransfer.getData('application/intend-task')
     if (taskData && onTaskDrop) {
       const { id } = JSON.parse(taskData)
       onTaskDrop(id, project.id)
@@ -605,7 +605,7 @@ function ProjectItem({ project, depth, onClick, onTaskDrop, onProjectDrop, onCon
     }
 
     // Project drop — use the current indicator
-    const projectData = e.dataTransfer.getData('application/opus-project')
+    const projectData = e.dataTransfer.getData('application/intend-project')
     if (projectData && onProjectDrop && dragIndicator) {
       const { id } = JSON.parse(projectData)
       onProjectDrop({
@@ -735,7 +735,7 @@ function ProjectsHeader({ onClose, onProjectDrop }: { onClose: () => void; onPro
   const [isDragOver, setIsDragOver] = useState(false)
 
   function handleDragOver(e: React.DragEvent) {
-    if (e.dataTransfer.types.includes('application/opus-project')) {
+    if (e.dataTransfer.types.includes('application/intend-project')) {
       e.preventDefault()
       e.dataTransfer.dropEffect = 'move'
       setIsDragOver(true)
@@ -749,7 +749,7 @@ function ProjectsHeader({ onClose, onProjectDrop }: { onClose: () => void; onPro
   function handleDrop(e: React.DragEvent) {
     e.preventDefault()
     setIsDragOver(false)
-    const data = e.dataTransfer.getData('application/opus-project')
+    const data = e.dataTransfer.getData('application/intend-project')
     if (data) {
       const { id } = JSON.parse(data)
       onProjectDrop(id)

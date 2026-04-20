@@ -1,13 +1,13 @@
 #!/usr/bin/env npx tsx
 /**
- * Import Todoist data into Opus
+ * Import Todoist data into Intend
  *
  * Usage:
  *   npx tsx scripts/import-todoist.ts <TODOIST_API_TOKEN>
  *
  * What it does:
  *   1. Fetches all projects, sections, and tasks from Todoist
- *   2. Transforms them to Opus format
+ *   2. Transforms them to Intend format
  *   3. Inserts into Supabase (requires you to be logged in)
  */
 
@@ -132,11 +132,11 @@ function convertColor(todoistColor: string): string {
 // ---------------------------------------------------------------------------
 // Priority Mapping
 // Todoist: 1 = lowest (none), 2 = low, 3 = medium, 4 = urgent (high)
-// Opus:    0 = none,          1 = low, 2 = medium, 3 = high
+// Intend:    0 = none,          1 = low, 2 = medium, 3 = high
 // ---------------------------------------------------------------------------
 
 function convertPriority(todoistPriority: number): number {
-  // Todoist 1 → Opus 0, Todoist 4 → Opus 3
+  // Todoist 1 → Intend 0, Todoist 4 → Intend 3
   return Math.max(0, todoistPriority - 1);
 }
 
@@ -244,7 +244,7 @@ async function loginAndGetUserId(
 ): Promise<{ userId: string; supabase: ReturnType<typeof createClient> }> {
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  console.log('\nLog in to your Opus account:');
+  console.log('\nLog in to your Intend account:');
   const email = await prompt('  Email: ');
   const password = await prompt('  Password: ');
 
@@ -261,7 +261,7 @@ async function loginAndGetUserId(
   return { userId: data.user.id, supabase };
 }
 
-async function importToOpusWithAuth(
+async function importToIntendWithAuth(
   todoistToken: string,
   supabase: ReturnType<typeof createClient>,
   userId: string
@@ -269,7 +269,7 @@ async function importToOpusWithAuth(
   // Fetch all Todoist data
   const { projects, sections, tasks } = await fetchAllTodoistData(todoistToken);
 
-  // ID mappings: Todoist ID → Opus UUID
+  // ID mappings: Todoist ID → Intend UUID
   const projectIdMap = new Map<string, string>();
   const sectionIdMap = new Map<string, string>();
   const taskIdMap = new Map<string, string>();
@@ -523,7 +523,7 @@ async function main() {
       supabase = result.supabase;
     }
 
-    await importToOpusWithAuth(token, supabase, userId);
+    await importToIntendWithAuth(token, supabase, userId);
   } catch (err) {
     console.error('\nImport failed:', err);
     process.exit(1);

@@ -1,5 +1,5 @@
 -- Add Todoist ID columns for sync support
--- These allow us to track which Opus records came from Todoist
+-- These allow us to track which Intend records came from Todoist
 -- and enable upsert-based sync without duplicates
 
 -- Projects

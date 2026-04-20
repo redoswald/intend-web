@@ -1,12 +1,12 @@
 #!/usr/bin/env npx tsx
 /**
- * Backfill todoist_id on existing Opus records
+ * Backfill todoist_id on existing Intend records
  *
  * Usage:
  *   npx tsx scripts/backfill-todoist-ids.ts <TODOIST_API_TOKEN> [EMAIL] [PASSWORD]
  *
  * Run this ONCE if you imported data before sync support was added.
- * It matches existing Opus records to Todoist by name/title and sets the todoist_id.
+ * It matches existing Intend records to Todoist by name/title and sets the todoist_id.
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
@@ -93,7 +93,7 @@ async function backfillTodoistIds(
   console.log(`  ${todoistSections.length} sections`);
   console.log(`  ${todoistTasks.length} tasks`);
 
-  // Fetch existing Opus data without todoist_ids
+  // Fetch existing Intend data without todoist_ids
   const [opusProjects, opusSections, opusTasks] = await Promise.all([
     supabase
       .from('projects')
@@ -128,12 +128,12 @@ async function backfillTodoistIds(
   const opusProjectToTodoist = new Map<string, string>();
 
   // First, get ALL opus projects to build the mapping (including those with todoist_id)
-  const { data: allOpusProjects } = await supabase
+  const { data: allIntendProjects } = await supabase
     .from('projects')
     .select('id, name, todoist_id')
     .eq('owner_id', userId);
 
-  for (const p of allOpusProjects || []) {
+  for (const p of allIntendProjects || []) {
     if (p.todoist_id) {
       opusProjectToTodoist.set(p.id, p.todoist_id);
     }
@@ -175,11 +175,11 @@ async function backfillTodoistIds(
   // Also build opus section id → todoist section id for task matching
   const opusSectionToTodoist = new Map<string, string>();
 
-  const { data: allOpusSections } = await supabase
+  const { data: allIntendSections } = await supabase
     .from('sections')
     .select('id, name, project_id, todoist_id');
 
-  for (const s of allOpusSections || []) {
+  for (const s of allIntendSections || []) {
     if (s.todoist_id) {
       opusSectionToTodoist.set(s.id, s.todoist_id);
     }
@@ -223,7 +223,7 @@ async function backfillTodoistIds(
   let tasksMatched = 0;
 
   // Build task key (project_id + section_id + title) → todoist_id
-  // Using title since content in Todoist maps to title in Opus
+  // Using title since content in Todoist maps to title in Intend
   const todoistTaskByKey = new Map<string, string>();
   for (const t of todoistTasks) {
     // Use project:section:title as key
@@ -330,7 +330,7 @@ async function main() {
       userId = data.user.id;
     } else {
       supabase = createClient(supabaseUrl, supabaseKey);
-      console.log('\nLog in to your Opus account:');
+      console.log('\nLog in to your Intend account:');
       const userEmail = await prompt('  Email: ');
       const userPassword = await prompt('  Password: ');
 

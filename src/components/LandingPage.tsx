@@ -57,7 +57,7 @@ export function LandingPage() {
                   <span className="text-accent-500">beautifully</span>
                 </h1>
                 <p className="mt-6 text-lg md:text-xl text-gray-600 leading-relaxed">
-                  Opus is a task manager that stays out of your way. Organize projects, track deadlines, and let AI help you focus on what actually matters.
+                  Intend is a task manager that stays out of your way. Organize projects, track deadlines, and let AI help you focus on what actually matters.
                 </p>
                 <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                   {user ? (
@@ -184,7 +184,7 @@ export function LandingPage() {
         {/* Simple Footer */}
         <footer className="px-4 py-8">
           <div className="max-w-6xl mx-auto text-center text-sm text-gray-500">
-            <p>&copy; {new Date().getFullYear()} Opus. Built with care.</p>
+            <p>&copy; {new Date().getFullYear()} Intend. Built with care.</p>
           </div>
         </footer>
       </div>

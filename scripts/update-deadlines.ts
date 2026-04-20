@@ -1,6 +1,6 @@
 #!/usr/bin/env npx tsx
 /**
- * Update existing Opus tasks with deadlines from Todoist
+ * Update existing Intend tasks with deadlines from Todoist
  *
  * Usage:
  *   npx tsx scripts/update-deadlines.ts <TODOIST_TOKEN> <EMAIL> <PASSWORD>
@@ -77,19 +77,19 @@ async function main() {
     return;
   }
 
-  // Fetch all open Opus tasks
-  console.log('\nFetching Opus tasks...');
+  // Fetch all open Intend tasks
+  console.log('\nFetching Intend tasks...');
   const { data: opusTasks, error: opusError } = await supabase
     .from('tasks')
     .select('id, title, deadline')
     .eq('status', 'open');
 
   if (opusError) {
-    console.error('Failed to fetch Opus tasks:', opusError.message);
+    console.error('Failed to fetch Intend tasks:', opusError.message);
     process.exit(1);
   }
 
-  // Create a map of title -> Opus task for matching
+  // Create a map of title -> Intend task for matching
   const opusTaskMap = new Map<string, { id: string; deadline: string | null }>();
   for (const t of opusTasks || []) {
     // Use lowercase for matching
@@ -133,7 +133,7 @@ async function main() {
   console.log('Deadline update complete!');
   console.log(`  Updated: ${updated}`);
   console.log(`  Already set: ${alreadySet}`);
-  console.log(`  Not found in Opus: ${notFound}`);
+  console.log(`  Not found in Intend: ${notFound}`);
   console.log('='.repeat(60));
 }
 
