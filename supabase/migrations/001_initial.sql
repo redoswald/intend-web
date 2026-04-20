@@ -1,4 +1,4 @@
--- Opus Database Schema
+-- Intend Database Schema
 -- Run this in Supabase SQL Editor or via CLI
 
 -- =============================================================================

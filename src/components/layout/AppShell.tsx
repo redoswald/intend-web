@@ -46,7 +46,7 @@ export function AppShell() {
           >
             <Menu className="w-6 h-6" />
           </button>
-          <span className="font-semibold text-gray-900">Opus</span>
+          <span className="font-semibold text-gray-900">Intend</span>
         </div>
 
         <div className="flex-1 overflow-y-auto">

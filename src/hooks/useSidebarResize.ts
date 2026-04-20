@@ -8,7 +8,7 @@ interface UseSidebarResizeOptions {
 }
 
 export function useSidebarResize({
-  storageKey = 'opus-sidebar-width',
+  storageKey = 'intend-sidebar-width',
   defaultWidth = 240,
   minWidth = 288,
   maxWidth = 360,

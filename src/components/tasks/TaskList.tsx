@@ -39,7 +39,7 @@ export function TaskList({ tasks, showProject = false, onTaskClick, emptyMessage
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
-    const taskData = e.dataTransfer.getData('application/opus-task')
+    const taskData = e.dataTransfer.getData('application/intend-task')
     if (!taskData || !dragIndicator) {
       setDragIndicator(null)
       return
@@ -151,13 +151,13 @@ function DraggableTaskRow({ task, showProject, onClick, onTaskClick, editingTask
   const indicator = dragIndicator?.targetId === task.id ? dragIndicator : null
 
   function handleDragStart(e: React.DragEvent) {
-    e.dataTransfer.setData('application/opus-task', JSON.stringify({ id: task.id, title: task.title }))
+    e.dataTransfer.setData('application/intend-task', JSON.stringify({ id: task.id, title: task.title }))
     e.dataTransfer.effectAllowed = 'move'
     draggedIdRef.current = task.id
   }
 
   function handleDragOver(e: React.DragEvent) {
-    if (!e.dataTransfer.types.includes('application/opus-task')) return
+    if (!e.dataTransfer.types.includes('application/intend-task')) return
     e.preventDefault()
     e.dataTransfer.dropEffect = 'move'
     if (isSelf) return

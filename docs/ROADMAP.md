@@ -1,4 +1,4 @@
-# Opus Roadmap
+# Intend Roadmap
 
 ## Completed
 
@@ -21,7 +21,7 @@
 - [x] Recurrence rule converter (Todoist natural language → RRULE)
 - [x] Independent scrolling for sidebar and main content
 - [x] Supabase CLI linked for migrations
-- [x] Deploy to Vercel (opus.aaronos.ai)
+- [x] Deploy to Vercel (tasks.doneintentionally.com)
 - [x] Maestro AI panel — slide-in drawer with suggested prompts, free-form input, markdown responses
 - [x] ⌘K command palette — search projects and views
 - [x] aaronOS design system foundation (CSS vars, fonts, shadcn scaffold)
@@ -82,7 +82,7 @@
 
 ### Tier 6 — Cross-App & Infrastructure
 
-- [x] ~~Unified account settings shared with All Friends~~ — Done. /settings page with shared Supabase profile
+- [x] ~~Unified account settings shared with Tend~~ — Done. /settings page with shared Supabase profile
 - [x] ~~App switcher dropdown~~ — Done. Wired up in sidebar Zone 1 + Apps card on settings
 - [ ] Supabase Edge Functions for secure AI proxy (key never in browser)
 - [ ] Real-time sync (Supabase subscriptions)

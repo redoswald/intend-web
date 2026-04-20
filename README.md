@@ -1,4 +1,4 @@
-# Todopus
+# Intend
 
 A Todoist-like task manager with first-class support for AI-assisted planning. Tasks have rich context (not just titles), enabling an AI to meaningfully review, prioritize, and schedule them.
 
@@ -36,7 +36,7 @@ npm run dev
 ## Project Structure
 
 ```
-todopus/
+intend-web/
 ├── src/
 │   ├── components/
 │   │   ├── auth/          # Login, Signup, AuthGuard

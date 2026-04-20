@@ -1,8 +1,12 @@
 # Changelog
 
-All notable changes to Todopus will be documented in this file.
+All notable changes to Intend will be documented in this file.
 
 ## [Unreleased]
+
+### Changed
+- Renamed product from "Opus"/"Todopus" to "Intend" as part of the Done Intentionally suite. Package name `todopus` → `intend-web`. UI copy, metadata, cross-app link, localStorage keys (with one-time migration), drag-and-drop MIME types, and shared design system doc updated. Claude Opus model references preserved.
+- Deleted obsolete "Maestro fits the musical theme of Opus" naming rationale from Maestro-AI-spec.md (the musical pun no longer tracks).
 
 ### Added
 - Route-based settings page (`/settings`) with Profile, Maestro AI, Security, Apps, and Data cards

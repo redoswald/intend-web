@@ -1,6 +1,6 @@
 #!/usr/bin/env npx tsx
 /**
- * Import completed tasks from Todoist into Opus
+ * Import completed tasks from Todoist into Intend
  *
  * Usage:
  *   npx tsx scripts/import-todoist-completed.ts <TODOIST_API_TOKEN> <EMAIL> <PASSWORD> [LIMIT]
@@ -125,8 +125,8 @@ async function importCompletedTasks(
   userId: string,
   limit: number
 ) {
-  // First, get the project ID mapping from existing Opus projects
-  console.log('\nFetching existing Opus projects for ID mapping...');
+  // First, get the project ID mapping from existing Intend projects
+  console.log('\nFetching existing Intend projects for ID mapping...');
 
   const { data: opusProjects, error: projectsError } = await supabase
     .from('projects')
@@ -136,7 +136,7 @@ async function importCompletedTasks(
     throw new Error(`Failed to fetch projects: ${projectsError.message}`);
   }
 
-  // We need to map Todoist project IDs to Opus project IDs
+  // We need to map Todoist project IDs to Intend project IDs
   // Since we don't have the original Todoist IDs stored, we'll match by name
   const projectNameToId = new Map<string, string>();
   for (const p of opusProjects || []) {
@@ -167,7 +167,7 @@ async function importCompletedTasks(
   let skipped = 0;
 
   for (const item of completedTasks) {
-    // Find the Opus project ID by matching names
+    // Find the Intend project ID by matching names
     const todoistProjectName = todoistIdToName.get(item.project_id);
     const isInboxTask = item.project_id === inboxProjectId;
 

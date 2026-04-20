@@ -22,7 +22,7 @@ interface TaskItemProps {
   defaultExpanded?: boolean
 }
 
-const EXPANDED_STORAGE_KEY = 'opus-subtasks-expanded'
+const EXPANDED_STORAGE_KEY = 'intend-subtasks-expanded'
 
 function getExpandedState(taskId: string): boolean | null {
   try {
@@ -99,7 +99,7 @@ export function TaskItem({ task, showProject = false, onClick, onTaskClick, edit
   }
 
   function handleDragStart(e: React.DragEvent) {
-    e.dataTransfer.setData('application/opus-task', JSON.stringify({
+    e.dataTransfer.setData('application/intend-task', JSON.stringify({
       id: task.id,
       title: task.title,
     }))

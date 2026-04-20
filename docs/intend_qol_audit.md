@@ -1,16 +1,16 @@
-# Opus — Structured QoL Audit
+# Intend — Structured QoL Audit
 
 ## What We're Working With
 
 **Current state (from screenshots + past conversations):**
-- Sidebar with Zone 1 (Opus logo), Zone 2 (nav + project tree), Zone 3 (avatar + settings gear)
+- Sidebar with Zone 1 (Intend logo), Zone 2 (nav + project tree), Zone 3 (avatar + settings gear)
 - Navigation: Inbox, Today (with count badge), Upcoming, Completed, Maestro
 - Project hierarchy with sections, sub-projects, and emoji support (🎨 Making)
 - Task creation inline from Inbox — title, description (markdown), project assignment, scheduled date, deadline, priority (color dots)
 - Project pages with wiki-like purpose/description at top, sections, and task list below
 - Maestro AI panel slides in from right — portfolio review, daily planning, overdue check
 - Settings is a modal with just the Anthropic API key
-- Shared Supabase auth with All Friends
+- Shared Supabase auth with Tend
 - "Add task" in sidebar navigates to Inbox with inline creation form
 
 ---
@@ -24,7 +24,7 @@
 | Delete account | ❌ | Medium | Data ownership |
 | Settings page (real) | ✅ | High | Route-based /settings page with 5 card sections: Profile, Maestro AI, Security, Apps, Data |
 | API key management | ✅ | — | Moved into Maestro AI card on /settings with show/hide toggle and masked display |
-| Notification preferences | ❌ | Low | Less urgent than All Friends since Opus doesn't have cadence reminders |
+| Notification preferences | ❌ | Low | Less urgent than Tend since Intend doesn't have cadence reminders |
 | Theme/appearance | ❌ | Low | Deferred to v2 with dark mode |
 | Data export | ❌ | Medium | Export tasks/projects as JSON or CSV |
 | Data import (Todoist) | ❌ | Medium | You use Todoist — migration path matters. Todoist has CSV and API export |
@@ -185,7 +185,7 @@
 | Bulk task operations | ❌ | Medium | Multi-select + bulk complete, delete, reschedule, move to project |
 | Task count badges | ✅ | — | "Today 12", "Inbox 1" in sidebar. Good |
 | Drag to reorder | ✅ | Medium | Project drag-to-reorder in sidebar with visual drop indicators |
-| Drag to reschedule | ❌ | Low | Drag task to a different date (requires calendar view in Opus) |
+| Drag to reschedule | ❌ | Low | Drag task to a different date (requires calendar view in Intend) |
 
 ---
 
@@ -206,7 +206,7 @@
 | Feature | Status | Priority | Notes |
 |---------|--------|----------|-------|
 | Landing page | ✅ | — | Exists, looks good |
-| App switcher to All Friends | ✅ | High | AppSwitcher in sidebar Zone 1 + Apps card on /settings with links to Opus and All Friends |
+| App switcher to Tend | ✅ | High | AppSwitcher in sidebar Zone 1 + Apps card on /settings with links to Intend and Tend |
 | "Is this free?" | ❌ | Medium | Pricing clarity, even if it's free |
 | Privacy policy | ❌ | Medium | Especially since it stores an API key |
 | "Built by Aaron" / about | ❌ | Low | Personal touch |
@@ -214,7 +214,7 @@
 
 ---
 
-## 14. CROSS-APP (same as All Friends audit)
+## 14. CROSS-APP (same as Tend audit)
 
 | Feature | Status | Priority | Notes |
 |---------|--------|----------|-------|
@@ -222,7 +222,7 @@
 | App switcher in sidebar | ✅ | High | Zone 1 AppSwitcher dropdown |
 | Shared avatar/display name | ✅ | Medium | Google avatar + editable display name on /settings, shown in sidebar |
 | Consistent auth handling | ❓ Unknown | Medium | Session expiry, redirect behavior |
-| All Friends → Opus integration | ❌ | Low-Medium | "Contact is due" → creates a task in Opus (future) |
+| Tend → Intend integration | ❌ | Low-Medium | "Contact is due" → creates a task in Intend (future) |
 
 ---
 
@@ -241,7 +241,7 @@
 
 ---
 
-## Opus-Specific Design Notes
+## Intend-Specific Design Notes
 
 **The "Add task" flow needs rethinking.** Currently it navigates to Inbox to show the creation form. This means if you're looking at your "Making" project and think "oh, I should add a task here," you have to leave, go to Inbox, create the task, assign it to Making, then navigate back. Every view should have a "+ Add task" affordance that pre-fills the current context (current project, today's date if on Today view, etc.).
 

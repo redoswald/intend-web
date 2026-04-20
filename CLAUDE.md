@@ -1,4 +1,4 @@
-# Todopus
+# Intend
 
 Todoist-like task manager with AI planning (Maestro). Built with React 18, TypeScript (strict), Tailwind CSS, Supabase (Postgres + Auth + RLS), Vite, and TanStack React Query. Deployed on Vercel.
 

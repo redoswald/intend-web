@@ -86,8 +86,8 @@
     --radius: 0.75rem;             /* 12px — design system radius-lg */
   }
 
-  /* Opus accent palette */
-  :root[data-app="opus"] {
+  /* Intend accent palette */
+  :root[data-app="intend"] {
     --accent-50: #FFF7ED;
     --accent-100: #FFEDD5;
     --accent-200: #FED7AA;

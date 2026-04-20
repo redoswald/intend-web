@@ -1,10 +1,8 @@
-# Maestro - AI Assistant for Opus
+# Maestro - AI Assistant for Intend
 
 ## Overview
 
-Maestro is a conversational AI assistant that helps users manage their tasks and projects in Opus. It lives in a slide-over drawer and has full access to the user's task database, enabling both analysis (like portfolio reviews) and direct actions (like creating or completing tasks).
-
-**Name rationale:** "Maestro" fits the musical theme of "Opus" - the conductor who orchestrates all the movements of your work.
+Maestro is a conversational AI assistant that helps users manage their tasks and projects in Intend. It lives in a slide-over drawer and has full access to the user's task database, enabling both analysis (like portfolio reviews) and direct actions (like creating or completing tasks).
 
 ---
 
@@ -258,7 +256,7 @@ CREATE TABLE user_settings (
 ## System Prompt
 
 ```
-You are Maestro, an AI assistant for Opus - a personal task and project management app.
+You are Maestro, an AI assistant for Intend - a personal task and project management app.
 
 Your role is to help the user manage their tasks, projects, and time effectively. You have full access to their task database and can both analyze their portfolio and take actions on their behalf.
 

@@ -209,19 +209,19 @@ export function SettingsPage() {
           <div className="space-y-3">
             <div className="flex items-center gap-3 px-3 py-2.5 rounded-md border border-accent-200 bg-accent-50">
               <div className="w-1 h-8 bg-accent-500 rounded-full" />
-              <span className="flex-1 text-sm font-medium text-gray-900">Opus</span>
+              <span className="flex-1 text-sm font-medium text-gray-900">Intend</span>
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent-100 text-accent-700">
                 Current app
               </span>
             </div>
             <a
-              href="https://allfriends.day"
+              href="https://friends.doneintentionally.com"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 px-3 py-2.5 rounded-md border border-gray-200 hover:bg-gray-50 transition-colors"
             >
               <div className="w-1 h-8 bg-blue-500 rounded-full" />
-              <span className="flex-1 text-sm font-medium text-gray-900">All Friends</span>
+              <span className="flex-1 text-sm font-medium text-gray-900">Tend</span>
               <ExternalLink className="w-4 h-4 text-gray-400" />
             </a>
           </div>
