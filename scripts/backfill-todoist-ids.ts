@@ -124,10 +124,10 @@ async function backfillTodoistIds(
   console.log('\nMatching projects...');
   let projectsMatched = 0;
 
-  // Also need to build opus project id → todoist project id for section/task matching
+  // Also need to build intend project id → todoist project id for section/task matching
   const opusProjectToTodoist = new Map<string, string>();
 
-  // First, get ALL opus projects to build the mapping (including those with todoist_id)
+  // First, get ALL intend projects to build the mapping (including those with todoist_id)
   const { data: allIntendProjects } = await supabase
     .from('projects')
     .select('id, name, todoist_id')
@@ -172,7 +172,7 @@ async function backfillTodoistIds(
     todoistSectionByKey.set(key, s.id);
   }
 
-  // Also build opus section id → todoist section id for task matching
+  // Also build intend section id → todoist section id for task matching
   const opusSectionToTodoist = new Map<string, string>();
 
   const { data: allIntendSections } = await supabase
