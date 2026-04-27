@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Markdown from 'react-markdown'
 import { useUpdateProject } from '@/hooks/useProjects'
 import { useCreateSection } from '@/hooks/useSections'
 import type { Project } from '@/types'
+
+const COLLAPSED_DESCRIPTION_HEIGHT = 240
 
 interface ProjectHeaderProps {
   project: Project
@@ -16,9 +18,25 @@ export function ProjectHeader({ project, sections }: ProjectHeaderProps) {
   const [description, setDescription] = useState(project.description ?? '')
   const [isAddingSection, setIsAddingSection] = useState(false)
   const [sectionName, setSectionName] = useState('')
+  const [isDescExpanded, setIsDescExpanded] = useState(false)
+  const [isDescOverflowing, setIsDescOverflowing] = useState(false)
+  const descContentRef = useRef<HTMLDivElement>(null)
 
   const updateProject = useUpdateProject()
   const createSection = useCreateSection()
+
+  useLayoutEffect(() => {
+    const el = descContentRef.current
+    if (!el) {
+      setIsDescOverflowing(false)
+      return
+    }
+    setIsDescOverflowing(el.scrollHeight > COLLAPSED_DESCRIPTION_HEIGHT + 4)
+  }, [project.description, isEditingDesc])
+
+  useEffect(() => {
+    setIsDescExpanded(false)
+  }, [project.id])
 
   async function handleSaveName() {
     if (!name.trim()) return
@@ -143,31 +161,52 @@ export function ProjectHeader({ project, sections }: ProjectHeaderProps) {
           </div>
         ) : project.description ? (
           <div className="group">
-            <div className="markdown-content text-sm text-gray-600">
-              <Markdown
-                components={{
-                  h1: ({ children }) => <h1 className="text-lg font-bold text-gray-900 mt-3 mb-2 first:mt-0">{children}</h1>,
-                  h2: ({ children }) => <h2 className="text-base font-semibold text-gray-900 mt-3 mb-1 first:mt-0">{children}</h2>,
-                  h3: ({ children }) => <h3 className="text-sm font-semibold text-gray-900 mt-2 mb-1 first:mt-0">{children}</h3>,
-                  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                  ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
-                  ol: ({ children }) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
-                  li: ({ children }) => <li>{children}</li>,
-                  strong: ({ children }) => <strong className="font-semibold text-gray-900">{children}</strong>,
-                  em: ({ children }) => <em className="italic">{children}</em>,
-                  a: ({ href, children }) => <a href={href} className="text-accent-600 hover:underline">{children}</a>,
-                  code: ({ children }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono">{children}</code>,
-                }}
-              >
-                {project.description}
-              </Markdown>
-            </div>
-            <button
-              onClick={() => setIsEditingDesc(true)}
-              className="mt-2 text-xs text-gray-400 opacity-0 group-hover:opacity-100 hover:text-accent-600 transition-opacity"
+            <div
+              className="relative overflow-hidden"
+              style={{
+                maxHeight:
+                  isDescOverflowing && !isDescExpanded ? COLLAPSED_DESCRIPTION_HEIGHT : undefined,
+              }}
             >
-              Edit description
-            </button>
+              <div ref={descContentRef} className="markdown-content text-sm text-gray-600">
+                <Markdown
+                  components={{
+                    h1: ({ children }) => <h1 className="text-lg font-bold text-gray-900 mt-3 mb-2 first:mt-0">{children}</h1>,
+                    h2: ({ children }) => <h2 className="text-base font-semibold text-gray-900 mt-3 mb-1 first:mt-0">{children}</h2>,
+                    h3: ({ children }) => <h3 className="text-sm font-semibold text-gray-900 mt-2 mb-1 first:mt-0">{children}</h3>,
+                    p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                    ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
+                    li: ({ children }) => <li>{children}</li>,
+                    strong: ({ children }) => <strong className="font-semibold text-gray-900">{children}</strong>,
+                    em: ({ children }) => <em className="italic">{children}</em>,
+                    a: ({ href, children }) => <a href={href} className="text-accent-600 hover:underline">{children}</a>,
+                    code: ({ children }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono">{children}</code>,
+                  }}
+                >
+                  {project.description}
+                </Markdown>
+              </div>
+              {isDescOverflowing && !isDescExpanded && (
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-gray-50 to-transparent" />
+              )}
+            </div>
+            <div className="mt-2 flex items-center gap-3">
+              {isDescOverflowing && (
+                <button
+                  onClick={() => setIsDescExpanded((v) => !v)}
+                  className="text-xs font-medium text-accent-600 hover:text-accent-700"
+                >
+                  {isDescExpanded ? 'Show less' : 'Show more'}
+                </button>
+              )}
+              <button
+                onClick={() => setIsEditingDesc(true)}
+                className="text-xs text-gray-400 opacity-0 group-hover:opacity-100 hover:text-accent-600 transition-opacity"
+              >
+                Edit description
+              </button>
+            </div>
           </div>
         ) : (
           <button
