@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react'
 import { isToday, isPast, parseISO } from 'date-fns'
+import { Sun } from 'lucide-react'
 import { MainPanel } from '@/components/layout/MainPanel'
 import { TaskList } from '@/components/tasks/TaskList'
 import { TaskEditor } from '@/components/tasks/TaskEditor'
+import { EmptyState } from '@/components/shared/EmptyState'
 import { useTasks } from '@/hooks/useTasks'
 import type { Task } from '@/types'
 
@@ -38,9 +40,12 @@ export function TodayView() {
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-accent-500" />
           </div>
         ) : tasks.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            No tasks due today. Enjoy your day!
-          </div>
+          <EmptyState
+            icon={Sun}
+            title="You're all caught up"
+            description="Nothing is due today. Enjoy a clear runway, or add something you'd like to tackle."
+            action={{ label: 'Add task', onClick: () => setShowAddTask(true) }}
+          />
         ) : (
           <div className="space-y-6">
             {overdue.length > 0 && (
@@ -71,7 +76,14 @@ export function TodayView() {
           </div>
         )}
 
-        {!showAddTask ? (
+        {showAddTask ? (
+          <div className="mt-4">
+            <TaskEditor
+              defaultDueDate={todayStr}
+              onClose={() => setShowAddTask(false)}
+            />
+          </div>
+        ) : tasks.length > 0 ? (
           <button
             onClick={() => setShowAddTask(true)}
             className="mt-4 flex items-center gap-2 px-3 py-2 text-gray-500 hover:text-accent-600 transition-colors"
@@ -79,14 +91,7 @@ export function TodayView() {
             <PlusIcon />
             <span>Add task</span>
           </button>
-        ) : (
-          <div className="mt-4">
-            <TaskEditor
-              defaultDueDate={todayStr}
-              onClose={() => setShowAddTask(false)}
-            />
-          </div>
-        )}
+        ) : null}
       </div>
     </MainPanel>
   )

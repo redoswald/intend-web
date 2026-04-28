@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react'
 import { format, parseISO } from 'date-fns'
+import { Calendar } from 'lucide-react'
 import { MainPanel } from '@/components/layout/MainPanel'
 import { TaskList } from '@/components/tasks/TaskList'
 import { TaskEditor } from '@/components/tasks/TaskEditor'
+import { EmptyState } from '@/components/shared/EmptyState'
 import { useTasks } from '@/hooks/useTasks'
 import type { Task } from '@/types'
 
@@ -35,9 +37,12 @@ export function UpcomingView() {
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-accent-500" />
           </div>
         ) : groupedTasks.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            No upcoming tasks scheduled
-          </div>
+          <EmptyState
+            icon={Calendar}
+            title="Nothing on the horizon"
+            description="Tasks with future due dates will show up here, grouped by day."
+            action={{ label: 'Add task', onClick: () => setShowAddTask(true) }}
+          />
         ) : (
           <div className="space-y-6">
             {groupedTasks.map(([dateKey, dateTasks]) => (
@@ -57,7 +62,13 @@ export function UpcomingView() {
           </div>
         )}
 
-        {!showAddTask ? (
+        {showAddTask ? (
+          <div className="mt-4">
+            <TaskEditor
+              onClose={() => setShowAddTask(false)}
+            />
+          </div>
+        ) : groupedTasks.length > 0 ? (
           <button
             onClick={() => setShowAddTask(true)}
             className="mt-4 flex items-center gap-2 px-3 py-2 text-gray-500 hover:text-accent-600 transition-colors"
@@ -65,13 +76,7 @@ export function UpcomingView() {
             <PlusIcon />
             <span>Add task</span>
           </button>
-        ) : (
-          <div className="mt-4">
-            <TaskEditor
-              onClose={() => setShowAddTask(false)}
-            />
-          </div>
-        )}
+        ) : null}
       </div>
     </MainPanel>
   )

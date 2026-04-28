@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { format, parseISO, isToday, isYesterday, isThisWeek, isThisYear } from 'date-fns'
+import { CheckCheck } from 'lucide-react'
 import { MainPanel } from '@/components/layout/MainPanel'
+import { EmptyState } from '@/components/shared/EmptyState'
 import { useCompletedTasks, useUpdateTask, useUncompleteTask } from '@/hooks/useTasks'
 import type { Task } from '@/types'
 
@@ -19,7 +21,11 @@ export function CompletedView() {
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-accent-500" />
           </div>
         ) : tasks.length === 0 ? (
-          <p className="text-center text-gray-500 py-12">No completed tasks yet</p>
+          <EmptyState
+            icon={CheckCheck}
+            title="No completed tasks yet"
+            description="Tasks you finish will collect here, grouped by date — a record of what you've gotten done."
+          />
         ) : (
           <div className="space-y-6">
             {grouped.map(({ label, tasks }) => (

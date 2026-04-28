@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
+import { Sparkles } from 'lucide-react'
 import { MainPanel } from '@/components/layout/MainPanel'
 import { TaskList } from '@/components/tasks/TaskList'
 import { TaskEditor } from '@/components/tasks/TaskEditor'
 import { ConfirmDeleteModal } from '@/components/shared/ConfirmDeleteModal'
+import { EmptyState } from '@/components/shared/EmptyState'
 import { ProjectHeader } from './ProjectHeader'
 import { useProject, useProjects, usePlacements, useUpdateProject, useDeleteProject, useArchiveProject, useReorderProject, getDescendantIds } from '@/hooks/useProjects'
 import { useTasks } from '@/hooks/useTasks'
@@ -94,6 +96,16 @@ export function ProjectView() {
           </div>
         )}
 
+        {/* Empty project state — only when truly empty and not currently adding */}
+        {unsectionedTasks.length === 0 && sections.length === 0 && addingTaskToSection !== 'none' && (
+          <EmptyState
+            icon={Sparkles}
+            title="A fresh project"
+            description="Add your first task to get going, or create sections from the project header to organize your work."
+            action={{ label: 'Add task', onClick: () => setAddingTaskToSection('none') }}
+          />
+        )}
+
         {/* Add task to project (unsectioned) */}
         {addingTaskToSection === 'none' ? (
           <div className="mb-6">
@@ -102,7 +114,7 @@ export function ProjectView() {
               onClose={() => setAddingTaskToSection(null)}
             />
           </div>
-        ) : (
+        ) : (unsectionedTasks.length > 0 || sections.length > 0) ? (
           <button
             onClick={() => setAddingTaskToSection('none')}
             className="mb-6 flex items-center gap-2 px-3 py-2 text-gray-500 hover:text-accent-600 transition-colors"
@@ -110,7 +122,7 @@ export function ProjectView() {
             <PlusIcon />
             <span>Add task</span>
           </button>
-        )}
+        ) : null}
 
         {/* Sections */}
         {sections.map((section) => (

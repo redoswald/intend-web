@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { Inbox } from 'lucide-react'
 import { MainPanel } from '@/components/layout/MainPanel'
 import { TaskList } from '@/components/tasks/TaskList'
 import { TaskEditor } from '@/components/tasks/TaskEditor'
+import { EmptyState } from '@/components/shared/EmptyState'
 import { useTasks } from '@/hooks/useTasks'
 import type { Task } from '@/types'
 
@@ -26,6 +28,13 @@ export function InboxView() {
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-accent-500" />
           </div>
+        ) : tasks.length === 0 && !showAddTask ? (
+          <EmptyState
+            icon={Inbox}
+            title="Inbox zero"
+            description="New tasks without a project land here. Capture a thought now and sort it later."
+            action={{ label: 'Add task', onClick: () => setShowAddTask(true) }}
+          />
         ) : (
           <>
             <TaskList
